@@ -1,0 +1,3 @@
+import bcrypt from 'bcrypt'; import { z } from 'zod'; import { connectDatabase, pool, sql } from '../database/pool.js';
+const input = z.object({ username: z.string().min(3).max(100), email: z.string().email().max(254), password: z.string().min(12).max(256) }).parse({ username: process.argv[2], email: process.argv[3], password: process.argv[4] });
+await connectDatabase(); const hash = await bcrypt.hash(input.password, 12); await pool.request().input('username', sql.NVarChar(100), input.username).input('email', sql.NVarChar(254), input.email).input('hash', sql.NVarChar(255), hash).query('INSERT INTO dbo.users (username, email, password_hash) VALUES (@username, @email, @hash)'); await pool.close(); console.log('User created.');

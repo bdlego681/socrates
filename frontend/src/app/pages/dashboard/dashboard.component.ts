@@ -1,0 +1,2 @@
+import { Component } from '@angular/core'; import { AuthService } from '../../core/auth.service';
+@Component({ standalone: true, template: `<p class="eyebrow">DASHBOARD</p><h1>Welcome back.</h1><section class="panel"><h2>Personal Portal</h2><p>You are successfully authenticated{{ auth.user()?.username ? ', ' + auth.user()?.username : '' }}.</p></section>` }) export class DashboardComponent { constructor(public auth:AuthService) {} }
