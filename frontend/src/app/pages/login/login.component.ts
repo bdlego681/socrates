@@ -1,3 +1,35 @@
-import { Component, signal } from '@angular/core'; import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; import { Router, RouterLink } from '@angular/router'; import { AuthService } from '../../core/auth.service';
-@Component({ standalone: true, imports: [ReactiveFormsModule, RouterLink], template: `<main class="public-page"><section class="auth-card"><a routerLink="/" class="brand">← Personal Portal</a><h1>Welcome back</h1><p class="muted">Sign in to continue to your workspace.</p><form [formGroup]="form" (ngSubmit)="submit()"><label>Username or email<input formControlName="identifier" autocomplete="username" /></label><label>Password<div class="password-field"><input [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password"/><button type="button" (click)="showPassword.set(!showPassword())">{{ showPassword() ? 'Hide' : 'Show' }}</button></div></label>@if (error()) {<p class="form-error">{{error()}}</p>}<button class="button wide" [disabled]="form.invalid || loading()">{{loading() ? 'Signing in…' : 'Sign in'}}</button></form></section></main>` })
- export class LoginComponent { form = new FormGroup({ identifier: new FormControl('', {nonNullable:true, validators:[Validators.required]}), password: new FormControl('', {nonNullable:true, validators:[Validators.required]}) }); loading=signal(false); error=signal(''); showPassword=signal(false); constructor(private auth:AuthService, private router:Router) {} submit() { if(this.form.invalid) return; this.loading.set(true); this.error.set(''); this.auth.login(this.form.getRawValue()).subscribe({next:r=>this.router.navigateByUrl(r.mfaRequired?'/login/mfa':'/app/dashboard'), error:()=>{this.error.set('Unable to sign in with those credentials.');this.loading.set(false)}}); } }
+import { Component, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth.service';
+
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './login.html',
+  styleUrl: './login.scss'
+})
+export class LoginComponent {
+  form = new FormGroup({
+    identifier: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    password: new FormControl('', { nonNullable: true, validators: [Validators.required] })
+  });
+  loading = signal(false);
+  error = signal('');
+  showPassword = signal(false);
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  submit() {
+    if (this.form.invalid) return;
+    this.loading.set(true);
+    this.error.set('');
+    this.auth.login(this.form.getRawValue()).subscribe({
+      next: r => this.router.navigateByUrl(r.mfaRequired ? '/login/mfa' : '/app/dashboard'),
+      error: () => {
+        this.error.set('Unable to sign in with those credentials.');
+        this.loading.set(false);
+      }
+    });
+  }
+}

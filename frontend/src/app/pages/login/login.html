@@ -1,0 +1,18 @@
+<main class="public-page">
+  <section class="auth-card">
+    <a routerLink="/" class="brand">← Personal Portal</a>
+    <h1>Welcome back</h1>
+    <p class="muted">Sign in to continue to your workspace.</p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>Username or email<input formControlName="identifier" autocomplete="username" /></label>
+      <label>Password
+        <div class="password-field">
+          <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
+          <button type="button" (click)="showPassword.set(!showPassword())">{{ showPassword() ? 'Hide' : 'Show' }}</button>
+        </div>
+      </label>
+      @if (error()) { <p class="form-error">{{ error() }}</p> }
+      <button class="button wide" [disabled]="form.invalid || loading()">{{ loading() ? 'Signing in…' : 'Sign in' }}</button>
+    </form>
+  </section>
+</main>
