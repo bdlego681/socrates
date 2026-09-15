@@ -30,6 +30,16 @@ Open `http://localhost:4200`. The Angular dev-server proxies `/api` to Express s
 
 Login validates credentials with bcrypt and returns only a generic failure message. On success, the server generates an opaque random token, stores only its HMAC hash in `sessions`, and places the original token in an HttpOnly, SameSite=Lax cookie. Each protected API request resolves the active non-expired session. Logout deletes that server record and clears the cookie. Angular checks `/api/auth/me` through the route guards but never stores a password or token in browser storage.
 
+## V2 MFA setup
+
+Apply `database/migrations/002_mfa_security.sql` after the V1 migration. Generate and add a separate 32-byte base64url key to `backend/.env`:
+
+```powershell
+node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+```
+
+Set the output as `MFA_ENCRYPTION_KEY=...`. This key encrypts TOTP secrets using AES-256-GCM and must be securely backed up; losing it prevents MFA verification. On Settings, select **Enable MFA**, scan the QR code, and verify the six-digit code. Recovery codes are displayed once after enrollment (or regeneration); only bcrypt hashes are stored. During login, a password-verified MFA user receives a five-minute MFA-pending session which cannot access `/api/auth/me` or protected routes until a TOTP or unused recovery code is verified.
+
 ## Database
 
 `users` stores unique username/email values, bcrypt password hashes, timestamps, and `mfa_enabled`. `sessions` stores a hash of each opaque session token, its owner, expiry, and creation time. The schema includes uniqueness and expiry indexes; `mfa_enabled` intentionally prepares a later separate MFA enrollment/secrets table without a users-table redesign.

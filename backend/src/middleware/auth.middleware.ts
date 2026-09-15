@@ -10,3 +10,10 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
   req.user = user; next();
 }
+export async function requireMfaPending(req: Request, res: Response, next: NextFunction) {
+  const token = req.cookies?.[env.SESSION_COOKIE_NAME] as string | undefined;
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  const user = await getSessionUser(token, 'mfa_pending');
+  if (!user) return res.status(401).json({ error: 'Unauthorized' });
+  req.user = user; next();
+}

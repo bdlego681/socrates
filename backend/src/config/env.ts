@@ -6,6 +6,7 @@ const parsed = z.object({
   DATABASE_URL: z.string().min(1).optional(), DB_DRIVER: z.enum(['tedious', 'msnodesqlv8']).default('tedious'),
   DB_SERVER: z.string().min(1).optional(), DB_DATABASE: z.string().min(1).optional(), DB_ODBC_DRIVER: z.string().min(1).default('ODBC Driver 18 for SQL Server'), SESSION_COOKIE_NAME: z.string().default('portal_session'),
   SESSION_TTL_HOURS: z.coerce.number().positive().default(24), SESSION_TOKEN_PEPPER: z.string().min(24),
+  MFA_ENCRYPTION_KEY: z.string().regex(/^[A-Za-z0-9_-]{43}$/, 'must be a base64url-encoded 32-byte key'), MFA_PENDING_TTL_MINUTES: z.coerce.number().positive().max(15).default(5),
   COOKIE_SECURE: z.enum(['true', 'false']).default('false').transform(v => v === 'true'),
   CORS_ORIGIN: z.string().url().default('http://localhost:4200')
 }).superRefine((value, ctx) => {
