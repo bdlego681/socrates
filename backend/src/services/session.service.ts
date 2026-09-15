@@ -18,4 +18,19 @@ export async function getSessionUser(token: string, state:SessionState='authenti
   return result.recordset[0] ?? null;
 }
 export async function invalidateSession(token: string) { await pool.request().input('tokenHash', sql.VarChar(64), hash(token)).query('DELETE FROM dbo.sessions WHERE token_hash = @tokenHash'); }
+export async function promotePendingSession(userId:string, token:string) {
+  const expiresAt = new Date(Date.now() + env.SESSION_TTL_HOURS * 3_600_000);
+  await pool.request()
+    .input('userId', sql.UniqueIdentifier, userId)
+    .input('tokenHash', sql.VarChar(64), hash(token))
+    .input('expiresAt', sql.DateTime2, expiresAt)
+    .query(`UPDATE dbo.sessions
+            SET state='authenticated', expires_at=@expiresAt, last_activity_at=SYSUTCDATETIME()
+            WHERE token_hash=@tokenHash AND state='mfa_pending'`);
+  const persisted = await pool.request()
+    .input('userId', sql.UniqueIdentifier, userId)
+    .input('tokenHash', sql.VarChar(64), hash(token))
+    .query<{ state: SessionState }>('SELECT state FROM dbo.sessions WHERE token_hash=@tokenHash');
+  return persisted.recordset[0]?.state === 'authenticated' ? expiresAt : null;
+}
 export async function invalidateOtherSessions(userId:string, token:string) { await pool.request().input('userId',sql.UniqueIdentifier,userId).input('tokenHash',sql.VarChar(64),hash(token)).query('DELETE FROM dbo.sessions WHERE user_id=@userId AND token_hash<>@tokenHash'); }
