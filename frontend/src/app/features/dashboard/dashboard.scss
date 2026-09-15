@@ -1,0 +1,47 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.welcome-section h1 {
+  margin-bottom: 8px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-list li {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #273140;
+}
+
+.activity-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.activity-type {
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.activity-date {
+  color: #80b5ff;
+  font-size: 0.85rem;
+}
+

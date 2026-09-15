@@ -4,4 +4,5 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { credentialsInterceptor } from './app/core/auth.service';
-bootstrapApplication(AppComponent, { providers: [provideRouter(routes, withComponentInputBinding()), provideHttpClient(withInterceptors([credentialsInterceptor]))] }).catch(console.error);
+import { apiErrorInterceptor } from './app/core/interceptors/api-error.interceptor';
+bootstrapApplication(AppComponent, { providers: [provideRouter(routes, withComponentInputBinding()), provideHttpClient(withInterceptors([credentialsInterceptor, apiErrorInterceptor]))] }).catch(console.error);

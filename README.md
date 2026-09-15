@@ -13,7 +13,9 @@ A small, extensible private portal foundation: public landing and login pages pl
 2. Copy `.env.example` to `backend/.env`, then replace `SESSION_TOKEN_PEPPER` with a long random value. The included `DB_DRIVER=msnodesqlv8` and connection string use your current Windows account through Integrated Security. Set `COOKIE_SECURE=true` when served over HTTPS.
 3. Create an empty SQL Server database named `personal_portal` (or change the connection string).
 4. Run [`database/migrations/001_auth.sql`](database/migrations/001_auth.sql) against that database.
-5. Create the first user (use a password of at least 12 characters): `npm run create-user --prefix backend -- yourname you@example.com "your-long-password"`.
+5. Apply [`database/migrations/002_mfa_security.sql`](database/migrations/002_mfa_security.sql) to add MFA tables.
+6. Apply [`database/migrations/003_activity_log.sql`](database/migrations/003_activity_log.sql) to add the V3 activity tracking table.
+7. Create the first user (use a password of at least 12 characters): `npm run create-user --prefix backend -- yourname you@example.com "your-long-password"`.
 
 ## Run locally
 
