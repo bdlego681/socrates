@@ -1,9 +1,197 @@
-<main class="auth-page">
-  <div class="auth-card" style="text-align: center;">
-    <div class="auth-brand">
-      <img src="/assets/logo-new.jpg" alt="Socrates">
-      <div class="auth-brand-name">SOCRATES</div>
+<div class="landing-page">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-content">
+      <div class="brand">
+        <img src="/assets/whitelogo-withtext.jpg" alt="Socrates Logo" class="brand-logo">
+      </div>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">Platform</a>
+        <a routerLink="/#" class="nav-link">About Us</a>
+        <a href="#features" class="nav-link">FAQs</a>
+        <a routerLink="/login" class="btn btn-secondary-teal">Sign In</a>
+      </div>
     </div>
-    <a routerLink="/login" class="btn btn-lg">Sign in</a>
-  </div>
-</main>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <h1 class="hero-title">Supply Chain Intelligence,<br><span class="text-highlight">Automated.</span></h1>
+      <p class="hero-subtitle">
+        Socrates evaluates your sales velocity, identifies stockout risks before they happen, and automates your purchase orders into a streamlined action center.
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/#" class="btn btn-lg btn-highlight">Schedule Demo</a>
+        <a href="#features" class="btn btn-lg btn-secondary-teal">Explore Features</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trusted By Social Proof -->
+  <section class="social-proof">
+    <div class="container">
+      <p class="social-proof-text">POWERING PROCUREMENT FOR MODERN SUPPLY CHAINS</p>
+    </div>
+    <div class="social-proof-marquee">
+      <div class="marquee-content">
+        <div class="fake-logo">ACME Corp</div>
+        <div class="fake-logo">Globex</div>
+        <div class="fake-logo">Soylent</div>
+        <div class="fake-logo">Initech</div>
+        <div class="fake-logo">Umbrella</div>
+        <div class="fake-logo">Stark Ind.</div>
+        <div class="fake-logo">Wayne Ent.</div>
+        <div class="fake-logo">Massive Dynamic</div>
+        <!-- Duplicated for seamless loop -->
+        <div class="fake-logo">ACME Corp</div>
+        <div class="fake-logo">Globex</div>
+        <div class="fake-logo">Soylent</div>
+        <div class="fake-logo">Initech</div>
+        <div class="fake-logo">Umbrella</div>
+        <div class="fake-logo">Stark Ind.</div>
+        <div class="fake-logo">Wayne Ent.</div>
+        <div class="fake-logo">Massive Dynamic</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 1: Velocity -->
+  <section id="features" class="feature-showcase bg-white">
+    <div class="container">
+      <div class="showcase-layout">
+        <div class="showcase-content">
+          <div class="eyebrow text-teal">Real-Time Velocity</div>
+          <h2 class="showcase-title">Stop guessing your stockouts.</h2>
+          <p class="showcase-desc">Socrates continuously monitors your daily sales velocity and calculates the exact days of inventory remaining. Prevent stockouts before they happen and stop tying up capital in dead stock.</p>
+          <ul class="showcase-bullets">
+            <li><span class="material-symbols-outlined text-teal">check</span> Live algorithmic calculations</li>
+            <li><span class="material-symbols-outlined text-teal">check</span> Visual health indicators</li>
+          </ul>
+        </div>
+        <div class="showcase-visual">
+          <div class="mock-panel">
+            <div class="mock-panel-header">Inventory Health Status</div>
+            <div class="mock-panel-body">
+              <div class="mock-item">
+                <div class="mock-item-title">Industrial Shelving Unit</div>
+                <div class="mock-bar-bg"><div class="mock-bar-fill bg-danger" style="width: 15%;"></div></div>
+                <div class="mock-item-meta text-danger">3 days remaining &bull; Critical</div>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-title">Pallet Jack (Standard)</div>
+                <div class="mock-bar-bg"><div class="mock-bar-fill bg-warning" style="width: 45%;"></div></div>
+                <div class="mock-item-meta text-warning">18 days remaining &bull; Order Soon</div>
+              </div>
+              <div class="mock-item">
+                <div class="mock-item-title">Corrugated Boxes (Large)</div>
+                <div class="mock-bar-bg"><div class="mock-bar-fill bg-success" style="width: 85%;"></div></div>
+                <div class="mock-item-meta text-success">85 days remaining &bull; Healthy</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 2: Automated POs -->
+  <section class="feature-showcase bg-gray-50">
+    <div class="container">
+      <div class="showcase-layout reverse">
+        <div class="showcase-content">
+          <div class="eyebrow text-lime">Human-in-the-Loop</div>
+          <h2 class="showcase-title">One click to restock.</h2>
+          <p class="showcase-desc">Your daily Action Center queues up precisely what needs to be ordered. Review the suggested quantities, make human adjustments, and approve. Formal Purchase Orders are instantly routed to your vendor's portal.</p>
+        </div>
+        <div class="showcase-visual">
+          <div class="mock-panel highlight-panel-lime">
+            <div class="mock-panel-header" style="background: var(--brand-highlight); color: var(--brand-primary);">Action Center</div>
+            <div class="mock-panel-body">
+              <div class="mock-alert bg-error-light">
+                <span class="material-symbols-outlined">warning</span> 1 Urgent Restock Required
+              </div>
+              <div class="mock-action-row">
+                <div class="mock-action-info">
+                  <strong>Industrial Shelving Unit</strong>
+                  <span class="text-muted">Suggested: 450 units</span>
+                </div>
+                <button class="mock-btn-approve-lime">Approve PO</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature 3: Vendor Risk -->
+  <section class="feature-showcase bg-white">
+    <div class="container">
+      <div class="showcase-layout">
+        <div class="showcase-content">
+          <div class="eyebrow text-orange">Vendor Risk Analytics</div>
+          <h2 class="showcase-title">Hold suppliers accountable.</h2>
+          <p class="showcase-desc">Automatically track vendor lead times and acknowledgment rates. Socrates plots your entire supply chain risk profile so you can identify bottlenecks before they impact your warehouse.</p>
+        </div>
+        <div class="showcase-visual">
+          <div class="mock-panel chart-panel">
+            <div class="mock-chart">
+              <div class="mock-chart-y"></div>
+              <div class="mock-chart-x"></div>
+              <div class="mock-dot orange-dot" style="bottom: 20%; left: 30%;"></div>
+              <div class="mock-dot orange-dot" style="bottom: 60%; left: 50%;"></div>
+              <div class="mock-dot danger" style="bottom: 80%; left: 80%;"></div>
+              <div class="mock-chart-label text-orange">Avg. Lead Time vs Fulfillment Rate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Banner -->
+  <section class="cta-banner">
+    <div class="container text-center">
+      <h2 class="cta-title">Ready to secure your supply chain?</h2>
+      <p class="cta-desc">Join the enterprise teams already using Socrates to eliminate dead stock.</p>
+      <a routerLink="/login" class="btn btn-lg btn-highlight">Get Started Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer">
+        </div>
+        <div class="footer-links">
+          <h4>Platform</h4>
+          <a href="#">Velocity Tracking</a>
+          <a href="#">Automated POs</a>
+          <a href="#">Vendor Analytics</a>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Blog</a>
+        </div>
+        <div class="footer-links">
+          <h4>Connect</h4>
+          <a href="#">Contact Sales</a>
+          <a href="#">Help & Support</a>
+          <a href="#">Twitter / X</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="copyright">&copy; 2026 Socrates Procurement OS. All rights reserved.</p>
+        <div class="legal-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

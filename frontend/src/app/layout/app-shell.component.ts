@@ -13,9 +13,21 @@ import { AuthService } from '../core/auth.service';
         </div>
         <div class="sidebar-nav">
           <a routerLink="/app/dashboard" routerLinkActive="active">
-            <span class="material-symbols-outlined">dashboard</span> Dashboard
+            <span class="material-symbols-outlined">dashboard</span> Action Center
           </a>
           @if (isAdmin) {
+            <a routerLink="/app/inventory" routerLinkActive="active">
+              <span class="material-symbols-outlined">inventory_2</span> Inventory
+            </a>
+            <a routerLink="/app/orders" routerLinkActive="active">
+              <span class="material-symbols-outlined">receipt_long</span> Purchase Orders
+            </a>
+            <a routerLink="/app/vendors" routerLinkActive="active">
+              <span class="material-symbols-outlined">storefront</span> Vendors
+            </a>
+            <a routerLink="/app/analytics" routerLinkActive="active">
+              <span class="material-symbols-outlined">analytics</span> Analytics
+            </a>
             <a routerLink="/app/users" routerLinkActive="active">
               <span class="material-symbols-outlined">group</span> Users
             </a>

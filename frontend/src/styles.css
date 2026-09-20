@@ -108,6 +108,10 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 h1, h2, h3, h4, h5, h6, p, ul, ol, pre, figure, blockquote { margin: 0; }
 
 a { color: var(--brand-primary); text-decoration: none; }
@@ -711,4 +715,112 @@ tbody tr:hover { background: var(--gray-50); }
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   16. MODALS & OVERLAYS
+   -------------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border);
+}
+
+.modal-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  background: var(--brand-primary);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: var(--space-1);
+  display: flex;
+  border-radius: var(--radius-sm);
+  transition: all 150ms;
+}
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.modal-body {
+  padding: var(--space-6);
+  background: var(--bg-surface);
+}
+
+.modal-footer {
+  padding: var(--space-4) var(--space-6);
+  background: var(--gray-50);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-accent {
+  background: var(--brand-accent);
+  color: #fff;
+}
+.btn-accent:hover:not(:disabled) {
+  background: #e57e47;
+}
+
+.btn-highlight {
+  background: var(--brand-highlight);
+  color: var(--brand-primary);
+  font-weight: 700;
+}
+.btn-highlight:hover:not(:disabled) {
+  background: #b5d133;
+}
+
+.btn-secondary-teal {
+  background: transparent;
+  color: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+}
+.btn-secondary-teal:hover:not(:disabled) {
+  background: rgba(58, 185, 176, 0.1);
 }
