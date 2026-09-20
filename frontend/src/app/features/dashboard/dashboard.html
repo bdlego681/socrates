@@ -1,42 +1,48 @@
-<p class="eyebrow">DASHBOARD</p>
-<h1>Welcome back.</h1>
-<div class="dashboard">
-  @if (loading()) {
-    <app-loading-spinner message="Loading dashboard..." [fullPage]="true"></app-loading-spinner>
-  } @else if (error()) {
-    <app-error-alert [message]="error()!"></app-error-alert>
-  } @else {
-    <div class="welcome-section">
-      <h1>Welcome, {{ dashboardData()?.user?.username }}</h1>
-      <p class="muted">Here is what is happening in your workspace today.</p>
+@if (loading()) {
+  <app-loading-spinner message="Loading dashboard data…" [fullPage]="true"></app-loading-spinner>
+} @else if (error()) {
+  <app-error-alert [message]="error()!"></app-error-alert>
+} @else {
+  <div class="page">
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-label">Account Status</div>
+        <div class="metric-value">
+          <span class="status"><span class="status-dot status-dot--success"></span> Active</span>
+        </div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">MFA Protection</div>
+        <div class="metric-value">{{ dashboardData()?.security?.mfaEnabled ? 'Enabled' : 'Disabled' }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Password Changed</div>
+        <div class="metric-value">{{ dashboardData()?.security?.passwordChangedAt ? (dashboardData()?.security?.passwordChangedAt | date:'mediumDate') : 'Never' }}</div>
+      </div>
     </div>
 
-    <div class="dashboard-grid">
-      <div class="panel security-panel">
-        <h2>Security Status</h2>
-        <dl>
-          <dt>MFA Enabled</dt>
-          <dd>{{ dashboardData()?.security?.mfaEnabled ? 'Yes' : 'No' }}</dd>
-          <dt>Password Changed</dt>
-          <dd>{{ dashboardData()?.security?.passwordChangedAt ? (dashboardData()?.security?.passwordChangedAt | date:'mediumDate') : 'Unknown' }}</dd>
-        </dl>
-      </div>
-
-      <div class="panel activity-panel">
-        <h2>Recent Activity</h2>
-        @if (dashboardData()?.recentActivity?.length === 0) {
-          <p class="muted">No recent activity.</p>
-        } @else {
-          <ul class="activity-list">
+    <div class="section">
+      <h2 class="section-title">Recent Activity</h2>
+      @if (dashboardData()?.recentActivity?.length === 0) {
+        <p class="text-secondary">No activity has been recorded yet.</p>
+      } @else {
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
             @for (activity of dashboardData()?.recentActivity; track activity.id) {
-              <li>
-                <span class="activity-type">{{ activity.action_type }}</span>
-                <span class="activity-date">{{ activity.created_at | date:'short' }}</span>
-              </li>
+              <tr>
+                <td>{{ activity.action_type }}</td>
+                <td class="text-secondary">{{ activity.created_at | date:'medium' }}</td>
+              </tr>
             }
-          </ul>
-        }
-      </div>
+          </tbody>
+        </table>
+      }
     </div>
-  }
-</div>
+  </div>
+}

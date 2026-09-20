@@ -3,7 +3,7 @@ import { env } from '../config/env.js';
 import { pool, sql } from '../database/pool.js';
 
 const hash = (token: string) => crypto.createHmac('sha256', env.SESSION_TOKEN_PEPPER).update(token).digest('hex');
-export type SessionUser = { id: string; username: string; email: string; mfaEnabled: boolean };
+export type SessionUser = { id: string; username: string; email: string; mfaEnabled: boolean; RoleID?: number; RoleName?: string };
 export type SessionState = 'authenticated' | 'mfa_pending';
 export async function createSession(userId: string, state: SessionState = 'authenticated') {
   const token = crypto.randomBytes(32).toString('base64url');
@@ -14,7 +14,11 @@ export async function createSession(userId: string, state: SessionState = 'authe
 }
 export async function getSessionUser(token: string, state:SessionState='authenticated'): Promise<SessionUser | null> {
   const result = await pool.request().input('tokenHash', sql.VarChar(64), hash(token)).input('state',sql.NVarChar(20),state).query<SessionUser>(`
-    SELECT u.id, u.username, u.email, u.mfa_enabled AS mfaEnabled FROM dbo.sessions s JOIN dbo.users u ON u.id = s.user_id WHERE s.token_hash = @tokenHash AND s.state=@state AND s.expires_at > SYSUTCDATETIME()`);
+    SELECT u.id, u.username, u.email, u.mfa_enabled AS mfaEnabled, u.RoleID, r.RoleName
+    FROM dbo.sessions s 
+    JOIN dbo.users u ON u.id = s.user_id 
+    LEFT JOIN dbo.Roles r ON u.RoleID = r.RoleID
+    WHERE s.token_hash = @tokenHash AND s.state=@state AND s.expires_at > SYSUTCDATETIME()`);
   return result.recordset[0] ?? null;
 }
 export async function invalidateSession(token: string) { await pool.request().input('tokenHash', sql.VarChar(64), hash(token)).query('DELETE FROM dbo.sessions WHERE token_hash = @tokenHash'); }

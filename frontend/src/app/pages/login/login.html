@@ -1,18 +1,32 @@
-<main class="public-page">
-  <section class="auth-card">
-    <a routerLink="/" class="brand">← Personal Portal</a>
-    <h1>Welcome back</h1>
-    <p class="muted">Sign in to continue to your workspace.</p>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <label>Username or email<input formControlName="identifier" autocomplete="username" /></label>
-      <label>Password
-        <div class="password-field">
-          <input [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
-          <button type="button" (click)="showPassword.set(!showPassword())">{{ showPassword() ? 'Hide' : 'Show' }}</button>
+<main class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand" style="position: relative;">
+      <a routerLink="/" style="position: absolute; left: 0; top: 0; font-size: var(--text-sm); font-weight: 500; display: flex; align-items: center; gap: var(--space-1);">&larr; Back</a>
+      <img src="/assets/logo-new.jpg" alt="Socrates">
+      <div class="auth-brand-name">SOCRATES</div>
+    </div>
+    <div class="auth-form">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-group">
+          <label for="login-id">Email or username</label>
+          <input id="login-id" type="text" formControlName="identifier" autocomplete="username">
         </div>
-      </label>
-      @if (error()) { <p class="form-error">{{ error() }}</p> }
-      <button class="button wide" [disabled]="form.invalid || loading()">{{ loading() ? 'Signing in…' : 'Sign in' }}</button>
-    </form>
-  </section>
+        <div class="form-group">
+          <label for="login-pw">Password</label>
+          <div class="password-wrap">
+            <input id="login-pw" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password">
+            <button type="button" class="password-toggle" (click)="showPassword.set(!showPassword())" tabindex="-1">
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+        </div>
+        @if (error()) {
+          <div class="form-error" role="alert">{{ error() }}</div>
+        }
+        <button type="submit" class="btn btn-block btn-lg" [disabled]="loading() || form.invalid">
+          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+    </div>
+  </div>
 </main>

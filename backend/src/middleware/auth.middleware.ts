@@ -10,6 +10,13 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
   req.user = user; next();
 }
+
+export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.user?.RoleName !== 'Admin') {
+    return res.status(403).json({ error: 'Forbidden: Admin access required' });
+  }
+  next();
+}
 export async function requireMfaPending(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies?.[env.SESSION_COOKIE_NAME] as string | undefined;
   if (!token) return res.status(401).json({ error: 'MFA session is missing; sign in again' });

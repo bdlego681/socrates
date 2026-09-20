@@ -1,20 +1,29 @@
-<main class="public-page">
-  <section class="auth-card">
-    <a routerLink="/login" class="brand">← Back to login</a>
-    <h1>Verify your identity</h1>
-    <p class="muted">Enter the code from your authenticator app.</p>
-    <div class="mfa-actions">
-      <label>{{ recovery() ? 'Recovery code' : '6-digit code' }}
-        <input [formControl]="code" inputmode="numeric" maxlength="32" autocomplete="one-time-code" [placeholder]="recovery() ? 'XXXXXXXX-XXXXXXXX' : '123456'" autofocus />
-      </label>
-      @if (error()) { <p class="form-error">{{ error() }}</p> }
-      <button type="button" class="button wide" (click)="submit()" [disabled]="code.invalid || loading()">
+<main class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand" style="position: relative;">
+      <a routerLink="/" style="position: absolute; left: 0; top: 0; font-size: var(--text-sm); font-weight: 500; display: flex; align-items: center; gap: var(--space-1);">&larr; Back</a>
+      <img src="/assets/logo-new.jpg" alt="Socrates">
+      <div class="auth-brand-name">SOCRATES</div>
+    </div>
+    <div class="auth-form">
+      <h3 style="margin-bottom: var(--space-2);">Two-factor authentication</h3>
+      <p class="text-secondary" style="margin-bottom: var(--space-6);">
+        {{ recovery() ? 'Enter one of your recovery codes to continue.' : 'Enter the 6-digit code from your authenticator app.' }}
+      </p>
+      <div class="form-group">
+        <label for="mfa-code">{{ recovery() ? 'Recovery code' : 'Authenticator code' }}</label>
+        <input id="mfa-code" type="text" [formControl]="code" [attr.inputmode]="recovery() ? 'text' : 'numeric'" maxlength="32" autocomplete="one-time-code" [placeholder]="recovery() ? 'XXXXXXXX-XXXXXXXX' : '000000'" autofocus>
+      </div>
+      @if (error()) {
+        <div class="form-error">{{ error() }}</div>
+      }
+      <button type="button" class="btn btn-block btn-lg" (click)="submit()" [disabled]="code.invalid || loading()">
         {{ loading() ? 'Verifying…' : 'Verify' }}
       </button>
-      <div class="mfa-divider" aria-hidden="true">or</div>
-      <button type="button" class="button wide" (click)="recovery.set(!recovery())">
-        {{ recovery() ? 'Use authenticator code' : 'Use a recovery code' }}
+      <hr class="divider">
+      <button type="button" class="btn btn-secondary btn-block" (click)="recovery.set(!recovery())">
+        {{ recovery() ? 'Use authenticator code instead' : 'Use a recovery code instead' }}
       </button>
     </div>
-  </section>
+  </div>
 </main>

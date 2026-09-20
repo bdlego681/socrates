@@ -1,5 +1,5 @@
 import { HttpClient, HttpInterceptorFn } from '@angular/common/http'; import { Injectable, signal } from '@angular/core'; import { catchError, map, Observable, of, tap } from 'rxjs';
-export type User = { id: string; username: string; email: string; mfaEnabled: boolean };
+export type User = { id: string; username: string; email: string; mfaEnabled: boolean; RoleID?: number; RoleName?: string };
 @Injectable({ providedIn: 'root' }) export class AuthService {
   readonly user = signal<User | null>(null); constructor(private http: HttpClient) {}
   check(): Observable<boolean> { return this.http.get<{user: User}>('/api/auth/me').pipe(tap(r => this.user.set(r.user)), map(() => true), catchError(() => { this.user.set(null); return of(false); })); }
