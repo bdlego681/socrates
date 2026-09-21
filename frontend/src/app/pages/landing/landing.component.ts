@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ContactService } from '../../core/contact.service';
 
 @Component({
   standalone: true,
@@ -8,8 +9,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './landing.scss'
 })
 export class LandingComponent {
-  showContactModal = signal(false);
-  contactFormSubmitted = signal(false);
+  constructor(public contact: ContactService) {}
   currentTestimonial = signal(0);
 
   testimonials = [
@@ -45,23 +45,6 @@ export class LandingComponent {
     this.currentTestimonial.set(index);
   }
 
-  openContact() {
-    this.showContactModal.set(true);
-    this.contactFormSubmitted.set(false);
+  
+  
   }
-
-  closeContact() {
-    this.showContactModal.set(false);
-  }
-
-  submitContact(e: Event) {
-    e.preventDefault();
-    // Simulate API call
-    setTimeout(() => {
-      this.contactFormSubmitted.set(true);
-      setTimeout(() => {
-        this.closeContact();
-      }, 3000);
-    }, 800);
-  }
-}

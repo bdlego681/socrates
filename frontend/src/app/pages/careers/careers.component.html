@@ -1,0 +1,123 @@
+<!-- Intro Section (Now correctly mapping to the .hero class from landing.scss) -->
+  <header class="hero">
+    <div class="container hero-content">
+      <h1 class="hero-title">Careers at Socrates</h1>
+      <p class="hero-subtitle">
+        We're building inventory intelligence for companies that move physical goods. Our team is small, our customers manage billions in inventory, and we have more problems than people. Browse open roles below.
+      </p>
+    </div>
+  </header>
+
+  <!-- Testimonial Banner (Subtle, centered, smaller) -->
+  <section class="testimonial-banner">
+    <div class="container">
+      <div class="testimonial-content">
+        <img src="/assets/bd_headshot.jpg" alt="Brant Dattilo" class="testimonial-avatar">
+        <div class="testimonial-quote">
+          "I spent fifteen years in supply chain watching teams make million-dollar reorder decisions on spreadsheets and gut feel. We started Socrates because that's insane. If you've ever looked at a broken system and thought 'I could fix this'—that's the feeling we hire for."
+        </div>
+        <div class="testimonial-author">
+          <strong>Brant Dattilo</strong>
+          <span class="text-secondary">CEO &amp; Co-Founder</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Job Board (Mapping to standard HTML <table> defined in styles.css) -->
+  <section class="job-board-section">
+    <div class="container">
+      <h2 class="section-title">Open Positions</h2>
+
+      <!-- Filters (Wrapped in .form-group and using native type="text" to trigger global styling) -->
+      <div class="filter-bar">
+        <div class="form-group">
+          <input type="text" (input)="onSearch($event)" placeholder="Search by title or department...">
+        </div>
+        
+        <div class="form-group custom-dropdown-container">
+          <button type="button" class="custom-select-trigger" (click)="toggleDept($event)" [class.active]="deptOpen()">
+            <span>{{ filterDepartment() === 'All' ? 'All Departments' : filterDepartment() }}</span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          @if (deptOpen()) {
+            <div class="dropdown-menu" style="width: 100%; top: calc(100% + var(--space-1)); left: 0; right: auto;">
+              @for (d of departments(); track d) {
+                <button type="button" class="dropdown-item" [class.selected]="filterDepartment() === d" (click)="setDept(d, $event)">
+                  {{ d === 'All' ? 'All Departments' : d }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+        
+        <div class="form-group custom-dropdown-container">
+          <button type="button" class="custom-select-trigger" (click)="toggleLoc($event)" [class.active]="locOpen()">
+            <span>{{ filterLocation() === 'All' ? 'All Locations' : filterLocation() }}</span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          @if (locOpen()) {
+            <div class="dropdown-menu" style="width: 100%; top: calc(100% + var(--space-1)); left: 0; right: auto;">
+              @for (l of locations(); track l) {
+                <button type="button" class="dropdown-item" [class.selected]="filterLocation() === l" (click)="setLoc(l, $event)">
+                  {{ l === 'All' ? 'All Locations' : l }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+        
+        <div class="form-group custom-dropdown-container">
+          <button type="button" class="custom-select-trigger" (click)="toggleType($event)" [class.active]="typeOpen()">
+            <span>{{ filterType() === 'All' ? 'All Types' : filterType() }}</span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          @if (typeOpen()) {
+            <div class="dropdown-menu" style="width: 100%; top: calc(100% + var(--space-1)); left: 0; right: auto;">
+              @for (t of types(); track t) {
+                <button type="button" class="dropdown-item" [class.selected]="filterType() === t" (click)="setType(t, $event)">
+                  {{ t === 'All' ? 'All Types' : t }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Job Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Location</th>
+            <th>Type</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role of filteredRoles(); track role.title) {
+            <tr class="job-row" (click)="contact.open()">
+              <td>
+                <div class="job-title">{{ role.title }}</div>
+                <div class="job-date">Posted {{ role.posted }}</div>
+              </td>
+              <td class="text-secondary">{{ role.department }}</td>
+              <td class="text-secondary">{{ role.location }}</td>
+              <td class="text-secondary">{{ role.type }}</td>
+              <td class="job-action">
+                <button class="btn btn-secondary btn-sm">Apply</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      @if (filteredRoles().length === 0) {
+        <div class="empty-state">
+          <h4 class="text-secondary">No roles match your filters.</h4>
+        </div>
+      }
+    </div>
+  </section>

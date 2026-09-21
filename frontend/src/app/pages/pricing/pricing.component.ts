@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ContactService } from '../../core/contact.service';
 
 @Component({
   standalone: true,
@@ -8,26 +9,5 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['../landing/landing.scss']
 })
 export class PricingComponent {
-  showContactModal = signal(false);
-  contactFormSubmitted = signal(false);
-
-  openContact() {
-    this.showContactModal.set(true);
-    this.contactFormSubmitted.set(false);
-  }
-
-  closeContact() {
-    this.showContactModal.set(false);
-  }
-
-  submitContact(e: Event) {
-    e.preventDefault();
-    setTimeout(() => {
-      this.contactFormSubmitted.set(true);
-      setTimeout(() => {
-        this.closeContact();
-      }, 3000);
-    }, 800);
-  }
+  constructor(public contact: ContactService) {}
 }
-

@@ -1,0 +1,141 @@
+/* ==========================================================================
+   Careers Component CSS
+   ========================================================================== */
+
+/* Navbar & Footer Helpers (Mapping from landing overrides) */
+.nav-cta-group {
+  display: flex;
+  gap: var(--space-3);
+  margin-left: var(--space-4);
+}
+
+.footer-logo-link {
+  display: inline-block;
+  transform: scale(3.5);
+  transform-origin: left center;
+  margin-bottom: var(--space-4);
+  transition: opacity 150ms;
+}
+.footer-logo-link:hover {
+  opacity: 0.8;
+}
+
+/* Subtle Testimonial Banner */
+.testimonial-banner {
+  padding: var(--space-8) 0;
+  background: var(--bg-body);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+.testimonial-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.testimonial-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin-bottom: var(--space-4);
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+.testimonial-quote {
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  line-height: 1.6;
+}
+.testimonial-author {
+  font-size: var(--text-sm);
+}
+.testimonial-author strong {
+  font-weight: 600;
+  color: var(--brand-primary);
+  margin-right: var(--space-2);
+}
+
+/* Job Board Specifics */
+.job-board-section {
+  padding: var(--space-12) 0;
+  background: var(--bg-surface);
+}
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+/* We don't want the form-group margin inside the filter grid */
+.filter-bar .form-group {
+  margin-bottom: 0;
+}
+
+/* Custom Dropdown Trigger (Mirrors global select/input styling) */
+.custom-dropdown-container {
+  position: relative;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  font-family: inherit;
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+
+.custom-select-trigger:hover {
+  border-color: var(--border-strong);
+}
+
+.custom-select-trigger.active {
+  outline: none;
+  border-color: var(--brand-secondary);
+  box-shadow: 0 0 0 3px rgba(58, 185, 176, 0.12);
+}
+
+.custom-select-trigger .material-symbols-outlined {
+  color: #6b7280;
+  font-size: 20px;
+}
+
+.dropdown-item.selected {
+  font-weight: 600;
+  color: var(--brand-primary);
+  background: var(--gray-50);
+}
+
+/* Table Enhancements */
+.job-row {
+  cursor: pointer;
+}
+.job-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.job-date {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+.job-action {
+  text-align: right;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--space-12) 0;
+  color: var(--text-muted);
+}

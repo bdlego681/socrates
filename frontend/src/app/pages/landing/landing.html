@@ -1,21 +1,4 @@
-<div class="landing-page">
-  <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container navbar-content">
-      <a routerLink="/" class="brand-logo-link"><img src="/assets/whitelogo-withtext.jpg" alt="Socrates" class="brand-logo"></a>
-      <div class="nav-links">
-        <a href="#features" class="nav-link">Platform</a>
-        <a routerLink="/pricing" class="nav-link">Pricing</a>
-        <a routerLink="/about" class="nav-link">Company</a>
-        <div style="display: flex; gap: 12px; margin-left: 16px;">
-          <a href="javascript:void(0)" (click)="openContact()" class="btn btn-highlight" style="padding: 6px 16px; font-weight: 600;">Schedule Demo</a>
-          <a routerLink="/login" class="btn btn-teal" style="padding: 6px 16px; font-weight: 600;">Sign In</a>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
+<!-- Hero Section -->
   <section class="hero">
     <div class="container hero-content">
       <h1 class="hero-title">Supply Chain Intelligence, <br><span class="text-highlight">Automated.</span></h1>
@@ -23,7 +6,7 @@
         Socrates evaluates your sales velocity and automates purchase orders, ensuring you never run out of your best-selling inventory.
       </p>
       <div class="hero-actions">
-        <a href="javascript:void(0)" (click)="openContact()" class="btn btn-lg btn-highlight">Schedule Demo</a>
+        <a href="javascript:void(0)" (click)="contact.open()" class="btn btn-lg btn-highlight">Schedule Demo</a>
         <a href="#features" class="btn btn-lg btn-secondary-teal">Explore Features</a>
       </div>
     </div>
@@ -162,7 +145,7 @@
           <h2 class="showcase-title">Integrates with your entire stack.</h2>
           <p class="showcase-desc">Socrates plugs directly into your existing ERP, warehouse management, and e-commerce systems. Pull real-time sales data and push automated POs without writing a single line of code.</p>
           <div style="margin-top: 40px;">
-            <a href="javascript:void(0)" (click)="openContact()" class="btn btn-lg btn-highlight">View All Integrations</a>
+            <a href="javascript:void(0)" (click)="contact.open()" class="btn btn-lg btn-highlight">View All Integrations</a>
           </div>
         </div>
 
@@ -257,79 +240,3 @@
 
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer id="company" class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a routerLink="/" style="display: inline-block; cursor: pointer; transform: scale(3.5); transform-origin: left center; margin-bottom: var(--space-4); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-            <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer">
-          </a>
-        </div>
-        <div class="footer-links">
-          <h4>Platform</h4>
-          <a href="#features">Velocity Tracking</a>
-          <a href="#action-center">Automated POs</a>
-          <a href="#vendor-risk">Vendor Analytics</a>
-        </div>
-        <div class="footer-links">
-          <h4>Company</h4>
-          <a routerLink="/about">About Us</a>
-          <a href="#">Careers</a>
-          <a href="#">Blog</a>
-        </div>
-        <div class="footer-links">
-          <h4>Connect</h4>
-          <a href="javascript:void(0)" (click)="openContact()">Contact Sales</a>
-          <a href="#">Help & Support</a>
-          <a href="#">Twitter / X</a>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p class="copyright">&copy; 2026 Socrates Procurement OS. All rights reserved.</p>
-        <div class="legal-links">
-          <a routerLink="/privacy-policy">Privacy Policy</a>
-          <a routerLink="/terms">Terms of Service</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-</div>
-
-<!-- Contact Sales Modal -->
-@if (showContactModal()) {
-  <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
-    <div class="modal-content" style="background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
-      
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h3 style="font-size: 24px; font-weight: 700; margin: 0;">Contact Sales</h3>
-        <button (click)="closeContact()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-500);">&times;</button>
-      </div>
-      
-      @if (contactFormSubmitted()) {
-        <div style="text-align: center; padding: 40px 0;">
-          <div style="width: 64px; height: 64px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px;">&#10003;</div>
-          <h4 style="font-size: 20px; margin-bottom: 8px;">Message Sent!</h4>
-          <p style="color: var(--gray-500);">Our enterprise sales team will be in touch shortly.</p>
-        </div>
-      } @else {
-        <form (submit)="submitContact($event)">
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Work Email</label>
-            <input type="email" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="name@company.com">
-          </div>
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Company Name</label>
-            <input type="text" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="Acme Corp">
-          </div>
-          <div class="form-group" style="margin-bottom: 24px;">
-            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">How can we help?</label>
-            <textarea rows="4" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; resize: vertical;" placeholder="Tell us about your supply chain volume..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-highlight w-100" style="width: 100%; padding: 12px; font-size: 16px; font-weight: 600;">Request Demo</button>
-        </form>
-      }
-    </div>
-  </div>
-}
