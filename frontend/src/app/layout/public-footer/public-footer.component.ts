@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ContactService } from '../../core/contact.service';
+
+import { Component } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 @Component({
-  selector: 'app-public-footer',
+  selector: "app-public-footer",
   standalone: true,
   imports: [RouterLink],
-  styleUrls: ['../../pages/landing/landing.scss'],
+  styleUrls: ["../../pages/landing/landing.scss"],
   template: `
     <footer id="company" class="footer" style="background: var(--bg-body);">
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <a routerLink="/" class="footer-logo-link" style="display: inline-block; cursor: pointer; transform: scale(3.5); transform-origin: left center; margin-bottom: var(--space-4); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+            <a routerLink="/" class="footer-logo-link" style="display: inline-block; cursor: pointer; margin-bottom: var(--space-4); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
               <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer">
             </a>
           </div>
@@ -31,8 +31,8 @@ import { ContactService } from '../../core/contact.service';
           </div>
           <div class="footer-links">
             <h4>Connect</h4>
-            <a href="javascript:void(0)" (click)="contact.open()">Contact Sales</a>
-            <a href="mailto:support@socrates.local">Help &amp; Support</a>
+            <a routerLink="/contact">Contact Sales</a>
+            <a href="mailto:support@socrates.local">Help & Support</a>
             <a href="https://x.com" target="_blank">Twitter / X</a>
           </div>
         </div>
@@ -47,7 +47,6 @@ import { ContactService } from '../../core/contact.service';
     </footer>
   `
 })
-export class PublicFooterComponent {
-  constructor(public contact: ContactService) {}
-}
+export class PublicFooterComponent {}
+
 

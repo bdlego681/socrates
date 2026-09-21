@@ -1,6 +1,5 @@
 import { Component, signal, computed, HostListener } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ContactService } from '../../core/contact.service';
+import { RouterLink, Router } from '@angular/router';
 
 interface Role {
   title: string;
@@ -18,7 +17,7 @@ interface Role {
   styleUrls: ['../landing/landing.scss', './careers.component.css']
 })
 export class CareersComponent {
-  constructor(public contact: ContactService) {}
+  constructor(public router: Router) {}
     
   searchQuery = signal('');
   filterDepartment = signal('All');

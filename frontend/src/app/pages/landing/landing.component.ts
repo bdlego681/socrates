@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ContactService } from '../../core/contact.service';
+
 
 @Component({
   standalone: true,
@@ -9,7 +9,7 @@ import { ContactService } from '../../core/contact.service';
   styleUrl: './landing.scss'
 })
 export class LandingComponent {
-  constructor(public contact: ContactService) {}
+  
   currentTestimonial = signal(0);
 
   testimonials = [

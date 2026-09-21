@@ -1,0 +1,58 @@
+
+<div class="contact-page">
+  <div class="container">
+    <div class="contact-grid">
+      
+      <!-- Left: Stark, Minimal Intro -->
+      <div class="contact-intro">
+        <h1 class="contact-title text-primary">Contact Sales</h1>
+        <p class="contact-subtitle text-secondary">
+          Tell us a bit about your supply chain, and our enterprise team will be in touch shortly.
+        </p>
+        <div class="contact-email">
+          <span class="text-secondary">Or email us directly at</span>
+          <a href="mailto:enterprise@socrates.local" class="email-link fw-600">enterprise&#64;socrates.local</a>
+        </div>
+      </div>
+
+      <!-- Right: Barebones, Clean Form -->
+      <div class="contact-form-wrapper">
+        @if (formSubmitted()) {
+          <div class="success-state">
+            <div class="success-icon">&#10003;</div>
+            <h3 class="text-primary">We received your message</h3>
+            <p class="text-secondary" style="margin-top: var(--space-2)">Someone from our team will reach out within 24 hours.</p>
+          </div>
+        } @else {
+          <form (submit)="submitContact($event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>First name</label>
+                <input type="text" required>
+              </div>
+              <div class="form-group">
+                <label>Last name</label>
+                <input type="text" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Work email</label>
+              <input type="email" required>
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <input type="text" required>
+            </div>
+            <div class="form-group">
+              <label>How can we help?</label>
+              <textarea rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-highlight" style="margin-top: var(--space-2)">Submit</button>
+          </form>
+        }
+      </div>
+
+    </div>
+  </div>
+</div>
+

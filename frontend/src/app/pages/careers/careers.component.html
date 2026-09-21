@@ -1,5 +1,5 @@
 <!-- Intro Section (Now correctly mapping to the .hero class from landing.scss) -->
-  <header class="hero">
+  <header class="hero careers-hero">
     <div class="container hero-content">
       <h1 class="hero-title">Careers at Socrates</h1>
       <p class="hero-subtitle">
@@ -97,7 +97,7 @@
         </thead>
         <tbody>
           @for (role of filteredRoles(); track role.title) {
-            <tr class="job-row" (click)="contact.open()">
+            <tr class="job-row" (click)="router.navigate(['/contact'])">
               <td>
                 <div class="job-title">{{ role.title }}</div>
                 <div class="job-date">Posted {{ role.posted }}</div>

@@ -1,0 +1,111 @@
+
+.contact-page {
+  min-height: calc(100vh - var(--header-h));
+  background: transparent;
+  padding: var(--space-16) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically center */
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  max-width: 1000px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+.contact-intro {
+  padding-top: var(--space-4);
+}
+
+.contact-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-4);
+  color: var(--brand-primary);
+}
+
+.contact-subtitle {
+  font-size: var(--text-lg);
+  line-height: 1.6;
+  margin-bottom: var(--space-8);
+  max-width: 400px;
+}
+
+.contact-email {
+  font-size: var(--text-base);
+}
+
+.email-link {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.email-link:hover {
+  color: var(--brand-secondary);
+}
+
+.contact-form-wrapper {
+  background: var(--bg-surface);
+  padding: var(--space-10);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--brand-secondary); /* Accent touch */
+  box-shadow: var(--shadow-md);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.success-state {
+  text-align: center;
+  padding: var(--space-10) 0;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--color-success);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--space-4);
+  font-size: var(--text-xl);
+}
+
+.fw-600 { font-weight: 600; }
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+
+@media (max-width: 768px) {
+  .contact-page {
+    padding: var(--space-8) 0;
+    align-items: flex-start; /* Reset vertical centering on mobile */
+  }
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  .contact-form-wrapper {
+    padding: var(--space-6);
+  }
+  .contact-title {
+    font-size: 2.5rem;
+  }
+}
+

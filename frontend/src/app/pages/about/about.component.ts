@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './about.html',
-  styleUrls: ['../landing/landing.scss']
+  styleUrls: ['../landing/landing.scss', './about.component.css']
 })
 export class AboutComponent implements AfterViewInit, OnDestroy {
   

@@ -1,13 +1,15 @@
-<!-- Hero Section -->
-  <section class="hero">
-    <div class="container hero-content">
-      <h1 class="hero-title">Supply Chain Intelligence, <br><span class="text-highlight">Automated.</span></h1>
-      <p class="hero-subtitle">
+<!-- Clean Hero Section -->
+  <section class="hero-clean">
+    <div class="container hero-content-clean">
+      <h1 class="hero-title-clean">Supply Chain Intelligence, <br><span class="hero-gradient-text">Automated.</span></h1>
+      <p class="hero-subtitle-clean">
         Socrates evaluates your sales velocity and automates purchase orders, ensuring you never run out of your best-selling inventory.
       </p>
-      <div class="hero-actions">
-        <a href="javascript:void(0)" (click)="contact.open()" class="btn btn-lg btn-highlight">Schedule Demo</a>
-        <a href="#features" class="btn btn-lg btn-secondary-teal">Explore Features</a>
+      <div class="hero-actions-clean">
+        <a routerLink="/contact" class="btn btn-lg btn-highlight" >Schedule Demo</a>
+        <a href="#features" class="btn btn-secondary btn-lg btn-with-arrow" >
+          Explore Features <span class="material-symbols-outlined action-arrow">chevron_right</span>
+        </a>
       </div>
     </div>
   </section>
@@ -40,8 +42,10 @@
     </div>
   </section>
 
-  <!-- Feature 1: Velocity -->
-  <section id="features" class="feature-showcase bg-white">
+  <hr class="section-divider">
+
+    <!-- Feature 1: Velocity -->
+  <section id="features" class="feature-showcase">
     <div class="container">
       <div class="showcase-layout">
         <div class="showcase-content">
@@ -54,24 +58,37 @@
           </ul>
         </div>
         <div class="showcase-visual">
-          <div class="mock-panel">
-            <div class="mock-panel-header">Inventory Health Status</div>
-            <div class="mock-panel-body">
-              <div class="mock-item">
-                <div class="mock-item-title">Industrial Shelving Unit</div>
-                <div class="mock-bar-bg"><div class="mock-bar-fill bg-danger" style="width: 15%;"></div></div>
-                <div class="mock-item-meta text-danger">3 days remaining &bull; Critical</div>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-title">Pallet Jack (Standard)</div>
-                <div class="mock-bar-bg"><div class="mock-bar-fill bg-warning" style="width: 45%;"></div></div>
-                <div class="mock-item-meta text-warning">18 days remaining &bull; Order Soon</div>
-              </div>
-              <div class="mock-item">
-                <div class="mock-item-title">Corrugated Boxes (Large)</div>
-                <div class="mock-bar-bg"><div class="mock-bar-fill bg-success" style="width: 85%;"></div></div>
-                <div class="mock-item-meta text-success">85 days remaining &bull; Healthy</div>
-              </div>
+          <div class="mock-browser">
+            <div class="mock-browser-header">
+              <div class="mock-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="mock-url">socrates.app/inventory</div>
+            </div>
+            <div class="mock-app-body p-0">
+              <table class="mock-table">
+                <thead>
+                  <tr><th>Product SKU</th><th>Velocity (7d)</th><th>Runway</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="mock-sku"><div class="mock-img"></div><div><strong>Industrial Shelving</strong><br><span class="text-muted">SKU-8921</span></div></div></td>
+                    <td><div class="mock-trend positive"><span class="material-symbols-outlined">trending_up</span> 145/wk</div></td>
+                    <td><div class="runway-text text-danger">3 Days</div><div class="mock-bar-bg"><div class="mock-bar-fill bg-danger" style="width: 15%;"></div></div></td>
+                    <td><span class="mock-badge bg-danger-light">Critical</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mock-sku"><div class="mock-img"></div><div><strong>Pallet Jack</strong><br><span class="text-muted">SKU-4102</span></div></div></td>
+                    <td><div class="mock-trend"><span class="material-symbols-outlined">trending_flat</span> 42/wk</div></td>
+                    <td><div class="runway-text text-warning">18 Days</div><div class="mock-bar-bg"><div class="mock-bar-fill bg-warning" style="width: 45%;"></div></div></td>
+                    <td><span class="mock-badge bg-warning-light">Order Soon</span></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mock-sku"><div class="mock-img"></div><div><strong>Corrugated Boxes</strong><br><span class="text-muted">SKU-1099</span></div></div></td>
+                    <td><div class="mock-trend negative"><span class="material-symbols-outlined">trending_down</span> 890/wk</div></td>
+                    <td><div class="runway-text text-success">85 Days</div><div class="mock-bar-bg"><div class="mock-bar-fill bg-success" style="width: 85%;"></div></div></td>
+                    <td><span class="mock-badge bg-success-light">Healthy</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -79,8 +96,10 @@
     </div>
   </section>
 
+  <hr class="section-divider">
+
   <!-- Feature 2: Automated POs -->
-  <section class="feature-showcase bg-gray-50">
+  <section class="feature-showcase">
     <div class="container">
       <div class="showcase-layout reverse">
         <div class="showcase-content">
@@ -89,18 +108,31 @@
           <p class="showcase-desc">Your daily Action Center queues up precisely what needs to be ordered. Review the suggested quantities, make human adjustments, and approve. Formal Purchase Orders are instantly routed to your vendor's portal.</p>
         </div>
         <div class="showcase-visual">
-          <div class="mock-panel">
-            <div class="mock-panel-header">Action Center</div>
-            <div class="mock-panel-body">
-              <div class="mock-alert bg-error-light">
-                <span class="material-symbols-outlined">warning</span> 1 Urgent Restock Required
-              </div>
-              <div class="mock-action-row">
-                <div class="mock-action-info">
-                  <strong>Industrial Shelving Unit</strong>
-                  <span class="text-muted">Suggested: 450 units</span>
+          <div class="mock-browser">
+            <div class="mock-browser-header">
+              <div class="mock-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="mock-url">socrates.app/purchase-orders/draft-491</div>
+            </div>
+            <div class="mock-app-body flex-row p-0">
+              <div class="mock-sidebar">
+                <div class="mock-ai-insight">
+                  <span class="material-symbols-outlined ai-icon">auto_awesome</span>
+                  <strong>Socrates Intelligence</strong>
+                  <p>Demand spiked 42% this week. Replenishing 450 units now avoids a 12-day stockout.</p>
                 </div>
-                <button class="mock-btn-approve">Approve PO</button>
+              </div>
+              <div class="mock-po-main">
+                <div class="mock-po-header">
+                  <h4>Draft PO #4912</h4>
+                  <span class="text-muted">Supplier: Global Warehouse Supply</span>
+                </div>
+                <div class="mock-po-items">
+                  <div class="po-item"><span>Industrial Shelving (SKU-8921)</span> <span>450 units</span> <span>$18,450.00</span></div>
+                  <div class="po-item text-muted" style="border-top: 1px solid var(--border); padding-top: 8px;"><span>Total</span> <span></span> <strong>$18,450.00</strong></div>
+                </div>
+                <div class="mock-po-footer">
+                  <button class="mock-btn-approve">Approve & Send PO</button>
+                </div>
               </div>
             </div>
           </div>
@@ -109,8 +141,10 @@
     </div>
   </section>
 
+  <hr class="section-divider">
+
   <!-- Feature 3: Vendor Risk -->
-  <section class="feature-showcase bg-white">
+  <section class="feature-showcase">
     <div class="container">
       <div class="showcase-layout">
         <div class="showcase-content">
@@ -119,14 +153,31 @@
           <p class="showcase-desc">Automatically track vendor lead times and acknowledgment rates. Socrates plots your entire supply chain risk profile so you can identify bottlenecks before they impact your warehouse.</p>
         </div>
         <div class="showcase-visual">
-          <div class="mock-panel chart-panel">
-            <div class="mock-chart">
-              <div class="mock-chart-y"></div>
-              <div class="mock-chart-x"></div>
-              <div class="mock-dot orange-dot" style="bottom: 20%; left: 30%;"></div>
-              <div class="mock-dot orange-dot" style="bottom: 60%; left: 50%;"></div>
-              <div class="mock-dot danger" style="bottom: 80%; left: 80%;"></div>
-              <div class="mock-chart-label text-orange">Avg. Lead Time vs Fulfillment Rate</div>
+          <div class="mock-browser">
+            <div class="mock-browser-header">
+              <div class="mock-dots"><span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span></div>
+              <div class="mock-url">socrates.app/analytics/vendors</div>
+            </div>
+            <div class="mock-app-body">
+              <div class="mock-chart-container">
+                <div class="mock-grid-lines">
+                  <div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div><div class="grid-line"></div>
+                </div>
+                <div class="mock-tooltip" style="bottom: 40%; left: 40%;">
+                  <strong>Global Warehouse Supply</strong>
+                  <div class="tooltip-stat">Avg Lead Time: <span>45 days</span></div>
+                  <div class="tooltip-stat">On-Time Rate: <span class="text-danger">62%</span></div>
+                </div>
+                <div class="mock-dot dot-danger tooltip-anchor" style="bottom: 40%; left: 40%;"></div>
+                <div class="mock-dot dot-healthy" style="bottom: 80%; left: 20%;"></div>
+                <div class="mock-dot dot-healthy" style="bottom: 75%; left: 85%;"></div>
+                <div class="mock-dot dot-warning" style="bottom: 60%; left: 60%;"></div>
+                
+                <div class="mock-axes">
+                  <span class="y-axis-label">On-Time Delivery %</span>
+                  <span class="x-axis-label">Average Lead Time (Days)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -134,19 +185,19 @@
     </div>
   </section>
 
+  <hr class="section-divider">
+
   <!-- Feature 4: Integrations (Semi-Circle) -->
-  <section class="feature-showcase bg-gray-50" style="overflow: hidden; padding: 120px 0; border-top: 1px solid var(--border);">
+  <section class="feature-showcase">
     <div class="container">
       <div class="showcase-layout" style="align-items: center; grid-template-columns: 1fr 1fr; gap: 64px;">
         
         <!-- Left Content -->
         <div class="showcase-content" style="padding-right: 40px;">
-          <div class="eyebrow text-teal">Seamless Connectivity</div>
+          <div class="eyebrow" style="color: var(--text-primary);">Seamless Connectivity</div>
           <h2 class="showcase-title">Integrates with your entire stack.</h2>
           <p class="showcase-desc">Socrates plugs directly into your existing ERP, warehouse management, and e-commerce systems. Pull real-time sales data and push automated POs without writing a single line of code.</p>
-          <div style="margin-top: 40px;">
-            <a href="javascript:void(0)" (click)="contact.open()" class="btn btn-lg btn-highlight">View All Integrations</a>
-          </div>
+          
         </div>
 
         <!-- Right Semi-Circle Visual -->
@@ -205,8 +256,10 @@
     </div>
   </section>
 
+  <hr class="section-divider">
+
   <!-- Testimonial Slider -->
-  <section class="feature-showcase bg-white" style="padding: 100px 0;">
+  <section class="feature-showcase">
     <div class="container">
       <div style="text-align: center; margin-bottom: 60px;">
         <h2 style="font-size: 40px; font-weight: 700; color: var(--text-primary);">What our partners say</h2>
@@ -240,3 +293,13 @@
 
     </div>
   </section>
+
+
+
+
+
+
+
+
+
+

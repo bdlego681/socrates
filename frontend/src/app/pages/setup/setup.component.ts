@@ -11,6 +11,8 @@ import { ErrorAlertComponent } from '../../shared/components/error-alert/error-a
   imports: [FormsModule, NgIf, ErrorAlertComponent],
   template: `
     <main class="auth-page">
+      <div class="global-accent-glow"></div>
+      <div class="global-accent-glow-2"></div>
       <div class="auth-card">
         <div class="auth-brand">
           <img src="/assets/logo-new.jpg" alt="Socrates">
@@ -86,3 +88,5 @@ export class SetupComponent {
     });
   }
 }
+
+

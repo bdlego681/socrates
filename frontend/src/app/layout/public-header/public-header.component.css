@@ -1,0 +1,23 @@
+
+.nav-cta-group {
+  display: flex;
+  gap: var(--space-3);
+  margin-left: var(--space-4);
+}
+
+
+.sign-in-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sign-in-arrow {
+  font-size: 18px;
+  margin-left: 6px;
+  transition: transform 0.2s ease;
+}
+
+.sign-in-btn:hover .sign-in-arrow {
+  transform: translateX(4px);
+}
+

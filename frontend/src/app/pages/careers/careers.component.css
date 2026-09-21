@@ -23,8 +23,7 @@
 /* Subtle Testimonial Banner */
 .testimonial-banner {
   padding: var(--space-8) 0;
-  background: var(--bg-body);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
   text-align: center;
 }
 .testimonial-content {
@@ -58,7 +57,7 @@
 /* Job Board Specifics */
 .job-board-section {
   padding: var(--space-12) 0;
-  background: var(--bg-surface);
+  background: transparent;
 }
 
 .filter-bar {
@@ -139,3 +138,4 @@
   padding: var(--space-12) 0;
   color: var(--text-muted);
 }
+
