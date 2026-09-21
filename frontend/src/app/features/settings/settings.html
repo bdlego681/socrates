@@ -1,85 +1,341 @@
-<div class="page">
-  <p class="page-description">Manage your account configuration and security.</p>
-
-  <div class="section">
-    <h2 class="section-title">Account</h2>
-    <div class="kv-list">
-      <div class="kv-item">
-        <span class="kv-label">Username</span>
-        <span class="kv-value">{{ auth.user()?.username }}</span>
-      </div>
-      <div class="kv-item">
-        <span class="kv-label">Email</span>
-        <span class="kv-value">{{ auth.user()?.email }}</span>
-      </div>
+<div class="settings-container">
+  <div class="section-header">
+    <div>
+      <h2 class="section-title">Settings</h2>
+      <p class="text-secondary">Manage your account, preferences, and workspace configuration.</p>
     </div>
   </div>
 
-  <hr class="divider">
-
-  <div class="section">
-    <h2 class="section-title">Multi-Factor Authentication</h2>
-
-    @if (!mfaEnabled() && !setup()) {
-      <p class="text-secondary" style="margin-bottom: var(--space-5);">
-        Add an extra layer of security with two-factor authentication.
-      </p>
-      <div style="margin-bottom: var(--space-5);">
-        <span class="status"><span class="status-dot status-dot--error"></span> MFA is not enabled</span>
-      </div>
-      <button type="button" class="btn" (click)="startSetup()">Enable MFA</button>
-    }
-
-    @if (setup()) {
-      <div class="setup-panel">
-        <h3 style="margin-bottom: var(--space-2);">Configure Authenticator</h3>
-        <p class="text-secondary" style="margin-bottom: var(--space-6);">
-          Scan the QR code with your authenticator app, then enter the verification code.
-        </p>
-        <div class="setup-grid">
-          <div class="setup-qr">
-            <img [src]="qr()" alt="MFA QR code">
+  <div class="settings-layout">
+      <!-- Security Tab -->
+      @if (activeTab() === 'security') {
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Account Details</h3>
+            <p>Your personal account information.</p>
           </div>
-          <div class="setup-details">
+          <div class="kv-list">
+            <div class="kv-item">
+              <span class="kv-label">Username</span>
+              <span class="kv-value">{{ auth.user()?.username }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Email</span>
+              <span class="kv-value">{{ auth.user()?.email }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Change Password</h3>
+            <p>Update your password to keep your account secure.</p>
+          </div>
+          <div class="form-grid single-col">
             <div class="form-group">
-              <label>Manual entry key</label>
-              <code class="code-block">{{ setup()?.manualKey }}</code>
+              <label>Current Password</label>
+              <input type="password" placeholder="••••••••">
             </div>
             <div class="form-group">
-              <label for="mfa-setup-code">Verification code</label>
-              <div style="display: flex; gap: var(--space-3); align-items: flex-start;">
-                <input id="mfa-setup-code" type="text" [formControl]="setupCode" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" (input)="normalizeCode()" style="width: 140px;">
-                <button type="button" class="btn" (click)="enable()" [disabled]="setupCode.invalid">Verify</button>
+              <label>New Password</label>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="action-row">
+              <button class="btn btn-secondary">Update Password</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Multi-Factor Authentication</h3>
+            <p>Add an extra layer of security with two-factor authentication.</p>
+          </div>
+
+          @if (!mfaEnabled() && !setup()) {
+            <div class="status-row">
+              <span class="status"><span class="status-dot status-dot--error"></span> MFA is not enabled</span>
+            </div>
+            <button type="button" class="btn" (click)="startSetup()">Enable MFA</button>
+          }
+
+          @if (setup()) {
+            <div class="setup-panel">
+              <h4>Configure Authenticator</h4>
+              <p class="text-secondary status-row">
+                Scan the QR code with your authenticator app, then enter the verification code.
+              </p>
+              <div class="setup-grid">
+                <div class="setup-qr">
+                  <img [src]="qr()" alt="MFA QR code">
+                </div>
+                <div class="setup-details">
+                  <div class="form-group">
+                    <label>Manual entry key</label>
+                    <code class="code-block">{{ setup()?.manualKey }}</code>
+                  </div>
+                  <div class="form-group">
+                    <label for="mfa-setup-code">Verification code</label>
+                    <div class="mfa-setup-form">
+                      <input id="mfa-setup-code" type="text" [formControl]="setupCode" class="mfa-code-input" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" (input)="normalizeCode()">
+                      <button type="button" class="btn" (click)="enable()" [disabled]="setupCode.invalid">Verify</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (mfaEnabled()) {
+            <div class="status-row">
+              <span class="status"><span class="status-dot status-dot--success"></span> MFA is enabled</span>
+            </div>
+            <button type="button" class="btn btn-secondary" (click)="regenerate()">Regenerate recovery codes</button>
+          }
+
+          @if (message()) {
+            <div class="form-error action-row">{{ message() }}</div>
+          }
+        </div>
+
+        @if (codes().length) {
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <h3>Recovery Codes</h3>
+              <p>Store these codes securely. Each can only be used once.</p>
+            </div>
+            <div class="recovery-codes">
+              <pre>{{ codes().join('\n') }}</pre>
+            </div>
+            <div class="action-row">
+              <button type="button" class="btn btn-secondary" (click)="copy()">Copy codes</button>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Preferences Tab -->
+      @if (activeTab() === 'preferences') {
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Localization</h3>
+            <p>Configure how dates, times, and currency are displayed to you.</p>
+          </div>
+          <div class="form-grid single-col">
+            <div class="form-group">
+              <label>Timezone</label>
+              <div class="custom-select-wrapper">
+                <button type="button" class="custom-select-trigger" [class.active]="openDropdown() === 'timezone'" (click)="toggleDropdown('timezone', $event)">
+                  <span>{{ getDisplayValue('timezone', prefs.timezone) }}</span>
+                  <span class="material-symbols-outlined">expand_more</span>
+                </button>
+                @if (openDropdown() === 'timezone') {
+                  <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                    <button type="button" class="dropdown-item" (click)="selectOption('timezone', 'America/New_York')">Eastern Time (US & Canada)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('timezone', 'America/Chicago')">Central Time (US & Canada)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('timezone', 'America/Denver')">Mountain Time (US & Canada)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('timezone', 'America/Los_Angeles')">Pacific Time (US & Canada)</button>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Date Format</label>
+              <div class="custom-select-wrapper">
+                <button type="button" class="custom-select-trigger" [class.active]="openDropdown() === 'dateFormat'" (click)="toggleDropdown('dateFormat', $event)">
+                  <span>{{ getDisplayValue('dateFormat', prefs.dateFormat) }}</span>
+                  <span class="material-symbols-outlined">expand_more</span>
+                </button>
+                @if (openDropdown() === 'dateFormat') {
+                  <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                    <button type="button" class="dropdown-item" (click)="selectOption('dateFormat', 'MM/DD/YYYY')">MM/DD/YYYY (US Standard)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('dateFormat', 'DD/MM/YYYY')">DD/MM/YYYY (European)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('dateFormat', 'YYYY-MM-DD')">YYYY-MM-DD (ISO)</button>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Currency</label>
+              <div class="custom-select-wrapper">
+                <button type="button" class="custom-select-trigger" [class.active]="openDropdown() === 'currency'" (click)="toggleDropdown('currency', $event)">
+                  <span>{{ getDisplayValue('currency', prefs.currency) }}</span>
+                  <span class="material-symbols-outlined">expand_more</span>
+                </button>
+                @if (openDropdown() === 'currency') {
+                  <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                    <button type="button" class="dropdown-item" (click)="selectOption('currency', 'USD')">USD ($)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('currency', 'EUR')">EUR (€)</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('currency', 'GBP')">GBP (£)</button>
+                  </div>
+                }
               </div>
             </div>
           </div>
         </div>
-      </div>
-    }
 
-    @if (mfaEnabled()) {
-      <div style="margin-bottom: var(--space-6);">
-        <span class="status"><span class="status-dot status-dot--success"></span> MFA is enabled</span>
-      </div>
-      <button type="button" class="btn btn-secondary" (click)="regenerate()">Regenerate recovery codes</button>
-    }
 
-    @if (message()) {
-      <div class="form-error" style="margin-top: var(--space-6); max-width: 480px;">{{ message() }}</div>
-    }
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Appearance</h3>
+            <p>Customize the look and feel of the application.</p>
+          </div>
+          <div class="form-grid single-col">
+            <div class="form-group">
+              <label>Theme</label>
+              <div class="custom-select-wrapper">
+                <button type="button" class="custom-select-trigger" [class.active]="openDropdown() === 'theme'" (click)="toggleDropdown('theme', $event)">
+                  <span>{{ getDisplayValue('theme', prefs.theme) }}</span>
+                  <span class="material-symbols-outlined">expand_more</span>
+                </button>
+                @if (openDropdown() === 'theme') {
+                  <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                    <button type="button" class="dropdown-item" (click)="selectOption('theme', 'light')">Light Mode</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('theme', 'dark')">Dark Mode</button>
+                    <button type="button" class="dropdown-item" (click)="selectOption('theme', 'system')">Use System Default</button>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-primary" (click)="savePreferences()">Save Preferences</button>
+          </div>
+        </div>
+      }
+
+      <!-- Notifications Tab -->
+      @if (activeTab() === 'notifications') {
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Email Alerts</h3>
+            <p>Control what system events trigger an email to your inbox.</p>
+          </div>
+          <div class="notifications-list">
+            <div class="notification-item">
+              <div class="notification-text">
+                <strong>Low Stock Alerts</strong>
+                <p>Email me when items fall below their reorder point.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.lowStock">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="notification-item">
+              <div class="notification-text">
+                <strong>Purchase Order Updates</strong>
+                <p>Email me when vendors acknowledge, ship, or update POs.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.poUpdates">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="notification-item">
+              <div class="notification-text">
+                <strong>Weekly Digest</strong>
+                <p>Send me a Monday morning summary of inventory health and open POs.</p>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" [(ngModel)]="notifications.weeklyDigest">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-primary" (click)="saveNotifications()">Save Notification Settings</button>
+          </div>
+        </div>
+      }
+
+      <!-- Workspace Tab -->
+      @if (activeTab() === 'workspace') {
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>Company Profile</h3>
+            <p>This information is used on Purchase Orders and official documents.</p>
+          </div>
+          <div class="form-grid single-col">
+            <div class="form-group">
+              <label>Company Legal Name</label>
+              <input type="text" [(ngModel)]="company.name" placeholder="e.g. Acme Corp LLC">
+            </div>
+            <div class="form-group">
+              <label>Tax ID / VAT Number</label>
+              <input type="text" [(ngModel)]="company.taxId" placeholder="e.g. 12-3456789">
+            </div>
+            <div class="form-group">
+              <label>Default Shipping Address</label>
+              <textarea rows="3" [(ngModel)]="company.address" placeholder="123 Commerce St..."></textarea>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="btn btn-primary" (click)="saveWorkspace()">Save Workspace</button>
+          </div>
+        </div>
+
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <h3>API Integrations</h3>
+            <p>Generate keys for programmatic access to the Socrates API.</p>
+          </div>
+          <div class="kv-list">
+            @for (key of settings.apiKeys(); track key.id) {
+              <div class="kv-item api-key-item">
+                <span class="kv-label">{{ key.name }}</span>
+                <div class="kv-value api-key-value">
+                  <span>{{ key.keyValue }}</span>
+                  <button class="btn btn-secondary btn-sm" (click)="settings.revokeApiKey(key.id)">Revoke</button>
+                </div>
+              </div>
+            }
+            @if (settings.apiKeys().length === 0) {
+              <div class="kv-item">
+                <span class="kv-label">No active keys</span>
+              </div>
+            }
+          </div>
+          <div class="action-row">
+            <button class="btn btn-secondary" (click)="generateKey()">Generate New API Key</button>
+          </div>
+        </div>
+      }
   </div>
 
-  @if (codes().length) {
-    <hr class="divider">
-    <div class="section">
-      <h2 class="section-title">Recovery Codes</h2>
-      <p class="text-secondary" style="margin-bottom: var(--space-4);">
-        Store these codes securely. Each can only be used once.
-      </p>
-      <div class="recovery-codes">
-        <pre>{{ codes().join('\n') }}</pre>
+  @if (showApiKeyModal()) {
+    <div class="modal-overlay" (click)="showApiKeyModal.set(false)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Generate API Key</h3>
+          <button class="modal-close" (click)="showApiKeyModal.set(false)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Connector Application</label>
+            <div class="custom-select-wrapper">
+              <button type="button" class="custom-select-trigger" [class.active]="openDropdown() === 'connector'" (click)="toggleDropdown('connector', $event)">
+                <span>{{ newKeyName() }}</span>
+                <span class="material-symbols-outlined">expand_more</span>
+              </button>
+              @if (openDropdown() === 'connector') {
+                <div class="dropdown-menu" (click)="$event.stopPropagation()">
+                  @for (app of availableConnectors; track app) {
+                    <button type="button" class="dropdown-item" (click)="newKeyName.set(app); openDropdown.set(null)">{{ app }}</button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="showApiKeyModal.set(false)">Cancel</button>
+          <button class="btn btn-primary" (click)="confirmGenerateKey()" [disabled]="!newKeyName().trim()">Generate Key</button>
+        </div>
       </div>
-      <button type="button" class="btn btn-secondary" (click)="copy()" style="margin-top: var(--space-4);">Copy codes</button>
     </div>
   }
 </div>

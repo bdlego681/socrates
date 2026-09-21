@@ -7,6 +7,8 @@ import authRoutes from './routes/auth.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import usersRoutes from './routes/users.routes.js';
 import procurementRoutes from './routes/procurement.routes.js';
+import searchRoutes from './routes/search.routes.js';
+import settingsRoutes from './routes/settings.routes.js';
 
 export const app = express();
 app.set('trust proxy', 1); app.use(helmet()); app.use(cors({ origin: env.CORS_ORIGIN, credentials: true })); app.use(express.json({ limit: '10kb' })); app.use(cookieParser());
@@ -15,4 +17,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/procurement', procurementRoutes);
+app.use('/api/search', searchRoutes);
+app.use('/api/settings', settingsRoutes);
 app.use((_req, res) => res.status(404).json({ error: 'Not found' }));

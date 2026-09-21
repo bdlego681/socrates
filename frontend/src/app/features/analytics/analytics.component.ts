@@ -1,8 +1,10 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ProcurementService } from '../../core/procurement.service';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorAlertComponent } from '../../shared/components/error-alert/error-alert.component';
+import { AppCurrencyPipe } from '../../core/pipes/app-currency.pipe';
 
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
@@ -10,72 +12,9 @@ import Chart from 'chart.js/auto';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ErrorAlertComponent, BaseChartDirective],
-  template: `
-    @if (loading()) {
-      <app-loading-spinner message="Loading analytics..." [fullPage]="true"></app-loading-spinner>
-    } @else if (error()) {
-      <app-error-alert [message]="error()!"></app-error-alert>
-    } @else {
-      <div class="page p-6">
-        <h1 class="section-title mb-6">Analytics Dashboard</h1>
-        
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
-          <div class="card text-center p-6">
-            <h3 class="text-secondary mb-2" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Capital Tied in Inventory</h3>
-            <div style="font-size: 48px; font-weight: 300; color: var(--brand-primary);">
-              {{ data()?.totalCapitalTied | currency }}
-            </div>
-          </div>
-          
-          <div class="card text-center p-6">
-            <h3 class="text-secondary mb-2" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">High Risk Items (Stockout)</h3>
-            <div style="font-size: 48px; font-weight: 300;" [class.text-danger]="data()?.highRiskItems > 0" [class.text-success]="data()?.highRiskItems === 0">
-              {{ data()?.highRiskItems }}
-            </div>
-          </div>
-        </div>
-
-        <div class="grid" style="grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px;">
-          <div class="card p-6">
-            <h3 class="mb-4">Inventory Capital Value (6 Months)</h3>
-            <div style="height: 300px;">
-              <canvas baseChart
-                      [data]="lineChartData"
-                      [options]="lineChartOptions"
-                      [type]="'line'">
-              </canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 24px;">
-          <div class="card p-6">
-            <h3 class="mb-4">Top Velocity Items vs Stock</h3>
-            <div style="height: 300px;">
-              <canvas baseChart
-                      [data]="barChartData"
-                      [options]="barChartOptions"
-                      [type]="'bar'">
-              </canvas>
-            </div>
-          </div>
-
-          <div class="card p-6">
-            <h3 class="mb-4">Vendor Risk Matrix</h3>
-            <div style="height: 300px;">
-              <canvas baseChart
-                      [data]="scatterChartData"
-                      [options]="scatterChartOptions"
-                      [type]="'scatter'">
-              </canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-    }
-  `,
-  styles: [`.p-6 { padding: 1.5rem; } .mb-6 { margin-bottom: 1.5rem; } .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1rem; }`]
+  imports: [CommonModule, LoadingSpinnerComponent, ErrorAlertComponent, BaseChartDirective, AppCurrencyPipe],
+  templateUrl: './analytics.html',
+  styleUrl: './analytics.scss'
 })
 export class AnalyticsComponent implements OnInit {
   data = signal<any>(null);
@@ -86,15 +25,23 @@ export class AnalyticsComponent implements OnInit {
   lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
   lineChartOptions: ChartConfiguration['options'] = {
     responsive: true, maintainAspectRatio: false,
-    elements: { line: { tension: 0.4 } },
-    plugins: { legend: { display: false } }
+    elements: { line: { tension: 0.4, borderWidth: 3 } },
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: 'rgba(0,0,0,0.05)' } },
+      x: { grid: { display: false } }
+    }
   };
 
   // Bar Chart (Velocity vs Stock)
   barChartData: ChartData<'bar'> = { labels: [], datasets: [] };
   barChartOptions: ChartConfiguration['options'] = {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { position: 'bottom' } }
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      y: { grid: { color: 'rgba(0,0,0,0.05)' } },
+      x: { grid: { display: false } }
+    }
   };
 
   // Scatter Chart (Vendor Risk Matrix)
@@ -102,8 +49,8 @@ export class AnalyticsComponent implements OnInit {
   scatterChartOptions: ChartConfiguration['options'] = {
     responsive: true, maintainAspectRatio: false,
     scales: {
-      x: { title: { display: true, text: 'Average Lead Time (Days)' } },
-      y: { title: { display: true, text: 'High Risk Items' }, min: 0 }
+      x: { title: { display: true, text: 'Average Lead Time (Days)' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+      y: { title: { display: true, text: 'High Risk Items' }, min: 0, grid: { color: 'rgba(0,0,0,0.05)' } }
     },
     plugins: {
       tooltip: {
@@ -117,7 +64,7 @@ export class AnalyticsComponent implements OnInit {
     }
   };
 
-  constructor(private proc: ProcurementService) {
+  constructor(private proc: ProcurementService, private http: HttpClient) {
     // Register chart.js
     Chart.register();
   }
@@ -175,5 +122,55 @@ export class AnalyticsComponent implements OnInit {
         pointHoverRadius: 10
       }]
     };
+  }
+
+  dateRange = signal('6');
+  showDateRange = signal(false);
+
+  toggleDateRange(event: Event) {
+    event.stopPropagation();
+    this.showDateRange.set(!this.showDateRange());
+  }
+
+  @HostListener('document:click')
+  closeDropdowns() {
+    this.showDateRange.set(false);
+  }
+
+  switchDateRange(months: string) {
+    this.dateRange.set(months);
+    this.showDateRange.set(false);
+    this.loading.set(true);
+    this.http.get(`/api/procurement/analytics?months=${months}`).subscribe({
+      next: (res: any) => {
+        this.data.set(res);
+        this.buildCharts(res);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  exportCSV() {
+    const d = this.data();
+    if (!d) return;
+    const lines = [
+      'Metric,Value',
+      `Capital Tied,$${d.totalCapitalTied}`,
+      `High Risk Items,${d.highRiskItems}`,
+      '',
+      'Month,Capital Value',
+      ...d.historicalCapital.map((h: any) => `${h.month},${h.value}`),
+      '',
+      'Product,Daily Velocity,Stock',
+      ...d.topVelocity.map((v: any) => `"${v.Name}",${v.AverageDailySales},${v.CurrentStock}`),
+    ];
+    const csvContent = "data:text/csv;charset=utf-8," + lines.join('\n');
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeURI(csvContent));
+    link.setAttribute("download", "analytics_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

@@ -2,14 +2,15 @@
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container navbar-content">
-      <div class="brand">
-        <img src="/assets/whitelogo-withtext.jpg" alt="Socrates Logo" class="brand-logo">
-      </div>
+      <a routerLink="/" class="brand-logo-link"><img src="/assets/whitelogo-withtext.jpg" alt="Socrates" class="brand-logo"></a>
       <div class="nav-links">
         <a href="#features" class="nav-link">Platform</a>
-        <a routerLink="/#" class="nav-link">About Us</a>
-        <a href="#features" class="nav-link">FAQs</a>
-        <a routerLink="/login" class="btn btn-secondary-teal">Sign In</a>
+        <a routerLink="/pricing" class="nav-link">Pricing</a>
+        <a routerLink="/about" class="nav-link">Company</a>
+        <div style="display: flex; gap: 12px; margin-left: 16px;">
+          <a href="javascript:void(0)" (click)="openContact()" class="btn btn-highlight" style="padding: 6px 16px; font-weight: 600;">Schedule Demo</a>
+          <a routerLink="/login" class="btn btn-teal" style="padding: 6px 16px; font-weight: 600;">Sign In</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -17,12 +18,12 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container hero-content">
-      <h1 class="hero-title">Supply Chain Intelligence,<br><span class="text-highlight">Automated.</span></h1>
+      <h1 class="hero-title">Supply Chain Intelligence, <br><span class="text-highlight">Automated.</span></h1>
       <p class="hero-subtitle">
-        Socrates evaluates your sales velocity, identifies stockout risks before they happen, and automates your purchase orders into a streamlined action center.
+        Socrates evaluates your sales velocity and automates purchase orders, ensuring you never run out of your best-selling inventory.
       </p>
       <div class="hero-actions">
-        <a routerLink="/#" class="btn btn-lg btn-highlight">Schedule Demo</a>
+        <a href="javascript:void(0)" (click)="openContact()" class="btn btn-lg btn-highlight">Schedule Demo</a>
         <a href="#features" class="btn btn-lg btn-secondary-teal">Explore Features</a>
       </div>
     </div>
@@ -35,23 +36,23 @@
     </div>
     <div class="social-proof-marquee">
       <div class="marquee-content">
-        <div class="fake-logo">ACME Corp</div>
-        <div class="fake-logo">Globex</div>
-        <div class="fake-logo">Soylent</div>
-        <div class="fake-logo">Initech</div>
-        <div class="fake-logo">Umbrella</div>
-        <div class="fake-logo">Stark Ind.</div>
-        <div class="fake-logo">Wayne Ent.</div>
-        <div class="fake-logo">Massive Dynamic</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">rocket_launch</span> ACME Corp</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">language</span> Globex</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">eco</span> Soylent</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">memory</span> Initech</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">water_drop</span> Umbrella</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">electric_bolt</span> Stark Ind.</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">shield</span> Wayne Ent.</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">all_inclusive</span> Massive Dynamic</div>
         <!-- Duplicated for seamless loop -->
-        <div class="fake-logo">ACME Corp</div>
-        <div class="fake-logo">Globex</div>
-        <div class="fake-logo">Soylent</div>
-        <div class="fake-logo">Initech</div>
-        <div class="fake-logo">Umbrella</div>
-        <div class="fake-logo">Stark Ind.</div>
-        <div class="fake-logo">Wayne Ent.</div>
-        <div class="fake-logo">Massive Dynamic</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">rocket_launch</span> ACME Corp</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">language</span> Globex</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">eco</span> Soylent</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">memory</span> Initech</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">water_drop</span> Umbrella</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">electric_bolt</span> Stark Ind.</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">shield</span> Wayne Ent.</div>
+        <div class="fake-logo" style="display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">all_inclusive</span> Massive Dynamic</div>
       </div>
     </div>
   </section>
@@ -105,8 +106,8 @@
           <p class="showcase-desc">Your daily Action Center queues up precisely what needs to be ordered. Review the suggested quantities, make human adjustments, and approve. Formal Purchase Orders are instantly routed to your vendor's portal.</p>
         </div>
         <div class="showcase-visual">
-          <div class="mock-panel highlight-panel-lime">
-            <div class="mock-panel-header" style="background: var(--brand-highlight); color: var(--brand-primary);">Action Center</div>
+          <div class="mock-panel">
+            <div class="mock-panel-header">Action Center</div>
             <div class="mock-panel-body">
               <div class="mock-alert bg-error-light">
                 <span class="material-symbols-outlined">warning</span> 1 Urgent Restock Required
@@ -116,7 +117,7 @@
                   <strong>Industrial Shelving Unit</strong>
                   <span class="text-muted">Suggested: 450 units</span>
                 </div>
-                <button class="mock-btn-approve-lime">Approve PO</button>
+                <button class="mock-btn-approve">Approve PO</button>
               </div>
             </div>
           </div>
@@ -150,37 +151,137 @@
     </div>
   </section>
 
-  <!-- Final CTA Banner -->
-  <section class="cta-banner">
-    <div class="container text-center">
-      <h2 class="cta-title">Ready to secure your supply chain?</h2>
-      <p class="cta-desc">Join the enterprise teams already using Socrates to eliminate dead stock.</p>
-      <a routerLink="/login" class="btn btn-lg btn-highlight">Get Started Now</a>
+  <!-- Feature 4: Integrations (Semi-Circle) -->
+  <section class="feature-showcase bg-gray-50" style="overflow: hidden; padding: 120px 0; border-top: 1px solid var(--border);">
+    <div class="container">
+      <div class="showcase-layout" style="align-items: center; grid-template-columns: 1fr 1fr; gap: 64px;">
+        
+        <!-- Left Content -->
+        <div class="showcase-content" style="padding-right: 40px;">
+          <div class="eyebrow text-teal">Seamless Connectivity</div>
+          <h2 class="showcase-title">Integrates with your entire stack.</h2>
+          <p class="showcase-desc">Socrates plugs directly into your existing ERP, warehouse management, and e-commerce systems. Pull real-time sales data and push automated POs without writing a single line of code.</p>
+          <div style="margin-top: 40px;">
+            <a href="javascript:void(0)" (click)="openContact()" class="btn btn-lg btn-highlight">View All Integrations</a>
+          </div>
+        </div>
+
+        <!-- Right Semi-Circle Visual -->
+        <div style="position: relative; height: 600px; flex: 1;">
+          
+          <!-- Dashed Orbit Lines (Right Half Only via clip-path) -->
+          <div style="position: absolute; left: 0; top: 300px; transform: translate(-50%, -50%); width: 480px; height: 480px; border-radius: 50%; border: 2px dashed var(--border); clip-path: inset(0 0 0 50%);"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform: translate(-50%, -50%); width: 800px; height: 800px; border-radius: 50%; border: 2px dashed var(--border); clip-path: inset(0 0 0 50%);"></div>
+
+          <!-- Spoke Lines -->
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(-65deg); width: 250px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(-35deg); width: 400px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(-10deg); width: 240px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(15deg); width: 420px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(45deg); width: 250px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+          <div style="position: absolute; left: 0; top: 300px; transform-origin: left center; transform: rotate(65deg); width: 320px; border-bottom: 2px dashed var(--border); z-index: 1;"></div>
+
+          <!-- Center Hub -->
+          <div style="position: absolute; left: 0; top: 300px; transform: translate(-50%, -50%); width: 100px; height: 100px; background: white; border-radius: 50%; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; z-index: 10; border: 4px solid var(--brand-primary); overflow: hidden;">
+            <img src="/assets/logo-new.jpg" alt="Socrates" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+
+          <!-- Node 1: Shopify (-65deg, 250px) -> X: 105.6, Y: 73.4 -->
+          <div style="position: absolute; left: 105px; top: 73px; transform: translate(-50%, -50%); background: #95BF47; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(149, 191, 71, 0.4); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: white;">shopping_cart</span> Shopify
+          </div>
+
+          <!-- Node 2: SAP (-35deg, 400px) -> X: 327.6, Y: 70.6 -->
+          <div style="position: absolute; left: 328px; top: 71px; transform: translate(-50%, -50%); background: #008EE2; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(0, 142, 226, 0.4); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: white;">domain</span> SAP
+          </div>
+
+          <!-- Node 3: NetSuite (-10deg, 240px) -> X: 236.3, Y: 258.4 -->
+          <div style="position: absolute; left: 236px; top: 258px; transform: translate(-50%, -50%); background: #00A1E0; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(0, 161, 224, 0.4); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: white;">account_tree</span> NetSuite
+          </div>
+
+          <!-- Node 4: REST API (15deg, 420px) -> X: 405.6, Y: 408.7 -->
+          <div style="position: absolute; left: 406px; top: 409px; transform: translate(-50%, -50%); background: var(--brand-primary); padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; border: 1px solid var(--border); white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: var(--brand-highlight);">api</span> REST API
+          </div>
+
+          <!-- Node 5: Flexport (45deg, 250px) -> X: 176.7, Y: 476.7 -->
+          <div style="position: absolute; left: 177px; top: 477px; transform: translate(-50%, -50%); background: #E3352B; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(227, 53, 43, 0.4); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: white;">flight_takeoff</span> Flexport
+          </div>
+
+          <!-- Node 6: Snowflake (65deg, 320px) -> X: 135.2, Y: 590.0 -->
+          <div style="position: absolute; left: 135px; top: 590px; transform: translate(-50%, -50%); background: #29B6F6; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 15px -3px rgba(41, 182, 246, 0.4); display: flex; align-items: center; gap: 8px; font-weight: 600; color: white; white-space: nowrap; z-index: 5;">
+            <span class="material-symbols-outlined" style="color: white;">cloud</span> Snowflake
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Slider -->
+  <section class="feature-showcase bg-white" style="padding: 100px 0;">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <h2 style="font-size: 40px; font-weight: 700; color: var(--text-primary);">What our partners say</h2>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 40px; max-width: 900px; margin: 0 auto;">
+        
+        <button (click)="prevTestimonial()" style="background: none; border: none; color: var(--brand-primary); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;"><span class="material-symbols-outlined" style="font-size: 32px;">chevron_left</span></button>
+
+        <div style="flex: 1; text-align: center;">
+          <p style="font-size: 24px; font-style: italic; color: var(--text-primary); line-height: 1.6; margin-bottom: 32px;">
+            "&#64;{{ testimonials[currentTestimonial()].quote }}"
+          </p>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+            <img [src]="testimonials[currentTestimonial()].img" style="width: 56px; height: 56px; border-radius: 50%;">
+            <div style="text-align: left;">
+              <div style="font-weight: 700; font-size: 16px;">&#64;{{ testimonials[currentTestimonial()].name }}</div>
+              <div style="color: var(--text-secondary); font-size: 14px;">&#64;{{ testimonials[currentTestimonial()].title }}</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: center; gap: 8px; margin-top: 40px;">
+            @for (t of testimonials; track t; let i = $index) {
+              <button (click)="setTestimonial(i)" [style.background]="currentTestimonial() === i ? 'var(--brand-primary)' : 'var(--gray-300)'" style="width: 10px; height: 10px; border-radius: 50%; border: none; cursor: pointer; transition: background 0.2s;"></button>
+            }
+          </div>
+        </div>
+
+        <button (click)="nextTestimonial()" style="background: none; border: none; color: var(--brand-primary); cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center;"><span class="material-symbols-outlined" style="font-size: 32px;">chevron_right</span></button>
+      </div>
+
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
+  <footer id="company" class="footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer">
+          <a routerLink="/" style="display: inline-block; cursor: pointer; transform: scale(3.5); transform-origin: left center; margin-bottom: var(--space-4); transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+            <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer">
+          </a>
         </div>
         <div class="footer-links">
           <h4>Platform</h4>
-          <a href="#">Velocity Tracking</a>
-          <a href="#">Automated POs</a>
-          <a href="#">Vendor Analytics</a>
+          <a href="#features">Velocity Tracking</a>
+          <a href="#action-center">Automated POs</a>
+          <a href="#vendor-risk">Vendor Analytics</a>
         </div>
         <div class="footer-links">
           <h4>Company</h4>
-          <a href="#">About Us</a>
+          <a routerLink="/about">About Us</a>
           <a href="#">Careers</a>
           <a href="#">Blog</a>
         </div>
         <div class="footer-links">
           <h4>Connect</h4>
-          <a href="#">Contact Sales</a>
+          <a href="javascript:void(0)" (click)="openContact()">Contact Sales</a>
           <a href="#">Help & Support</a>
           <a href="#">Twitter / X</a>
         </div>
@@ -188,10 +289,47 @@
       <div class="footer-bottom">
         <p class="copyright">&copy; 2026 Socrates Procurement OS. All rights reserved.</p>
         <div class="legal-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
+          <a routerLink="/privacy-policy">Privacy Policy</a>
+          <a routerLink="/terms">Terms of Service</a>
         </div>
       </div>
     </div>
   </footer>
 </div>
+
+<!-- Contact Sales Modal -->
+@if (showContactModal()) {
+  <div class="modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+    <div class="modal-content" style="background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="font-size: 24px; font-weight: 700; margin: 0;">Contact Sales</h3>
+        <button (click)="closeContact()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-500);">&times;</button>
+      </div>
+      
+      @if (contactFormSubmitted()) {
+        <div style="text-align: center; padding: 40px 0;">
+          <div style="width: 64px; height: 64px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px;">&#10003;</div>
+          <h4 style="font-size: 20px; margin-bottom: 8px;">Message Sent!</h4>
+          <p style="color: var(--gray-500);">Our enterprise sales team will be in touch shortly.</p>
+        </div>
+      } @else {
+        <form (submit)="submitContact($event)">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Work Email</label>
+            <input type="email" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="name@company.com">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Company Name</label>
+            <input type="text" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="Acme Corp">
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">How can we help?</label>
+            <textarea rows="4" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; resize: vertical;" placeholder="Tell us about your supply chain volume..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-highlight w-100" style="width: 100%; padding: 12px; font-size: 16px; font-weight: 600;">Request Demo</button>
+        </form>
+      }
+    </div>
+  </div>
+}

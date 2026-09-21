@@ -1,0 +1,254 @@
+@if (loading()) {
+  <app-loading-spinner message="Loading vendor directory..." [fullPage]="true"></app-loading-spinner>
+} @else if (error()) {
+  <app-error-alert [message]="error()!"></app-error-alert>
+} @else {
+  <div class="vendors-container">
+    
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Vendor Directory</h2>
+        <p class="text-secondary">Manage your supplier relationships and monitor performance.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="exportCSV()">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">download</span> Export Directory
+        </button>
+        <button class="btn btn-primary" (click)="openInviteModal()">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">person_add</span> Invite Vendor
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Total Vendors</div>
+        <div class="metric-value">{{ totalVendors() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Active Suppliers</div>
+        <div class="metric-value">{{ activeVendors() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Pending Approvals</div>
+        <div class="metric-value" style="color: var(--color-warning);">{{ pendingVendors() }}</div>
+      </div>
+    </div>
+
+    @if (vendors().length === 0) {
+      <div class="empty-state">
+        <span class="material-symbols-outlined empty-icon">group_off</span>
+        <p class="text-secondary">No vendors found. Invite your first supplier to get started.</p>
+      </div>
+    } @else {
+      <!-- Toolbar -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="toolbar-search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="Search vendors by name or email..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)">
+          </div>
+          <div class="toolbar-actions">
+            <div style="position: relative;">
+              <button class="btn btn-secondary" (click)="toggleStatusFilter($event)">
+                <span class="material-symbols-outlined" style="margin-right: var(--space-2);">filter_list</span> 
+                {{ statusFilter() === 'all' ? 'All Status' : statusFilter() }}
+                <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+              </button>
+              @if (showStatusFilter()) {
+                <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                  <button class="dropdown-item" (click)="onStatusFilterChange('all')">All Status</button>
+                  <button class="dropdown-item" (click)="onStatusFilterChange('Active')">Active</button>
+                  <button class="dropdown-item" (click)="onStatusFilterChange('Pending')">Pending</button>
+                </div>
+              }
+            </div>
+            <div style="position: relative;">
+              <button class="btn btn-secondary" (click)="toggleSortMenu($event)">
+                <span class="material-symbols-outlined" style="margin-right: var(--space-2);">sort</span> 
+                Sort
+                <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+              </button>
+              @if (showSortMenu()) {
+                <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                  <button class="dropdown-item" (click)="onSortChange('name')">Name A→Z</button>
+                  <button class="dropdown-item" (click)="onSortChange('score')">Score (High→Low)</button>
+                  <button class="dropdown-item" (click)="onSortChange('pos')">Active POs (High→Low)</button>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <table>
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Contact Info</th>
+              <th>Status</th>
+              <th>Supplier Score</th>
+              <th>Active POs</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (vendor of paginatedVendors(); track vendor.UserID) {
+              <tr>
+                <td>
+                  <div style="display: flex; align-items: center; gap: var(--space-3);">
+                    <div class="vendor-avatar-small">{{ vendor.initial }}</div>
+                    <div style="font-weight: 500; color: var(--brand-primary);">{{ vendor.username || 'Pending Setup' }}</div>
+                  </div>
+                </td>
+                <td class="text-secondary">{{ vendor.Email }}</td>
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                    <span class="status-dot" 
+                          [class.status-dot--success]="vendor.AccountStatus === 'Active'"
+                          [class.status-dot--warning]="vendor.AccountStatus === 'Pending'">
+                    </span>
+                    {{ vendor.AccountStatus }}
+                  </span>
+                </td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: var(--space-1);">
+                    <span class="material-symbols-outlined star-icon">star</span>
+                    <span style="font-weight: 500; color: var(--text-primary);">{{ vendor.rating }}</span>
+                  </div>
+                </td>
+                <td>
+                  <span style="font-family: var(--font-mono); font-weight: 500;">{{ vendor.activePOs }}</span>
+                </td>
+                <td style="text-align: right;">
+                  <button class="btn btn-secondary" (click)="selectedVendor.set(vendor)">
+                    Profile
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        
+        @if (filteredVendors().length === 0) {
+          <div class="empty-state">
+            <p class="text-secondary">No vendors found matching your search.</p>
+          </div>
+        } @else {
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border);">
+            <div class="text-secondary" style="font-size: var(--text-sm);">
+              Showing {{ startRecord() }} to {{ endRecord() }} of {{ filteredVendors().length }} results
+            </div>
+            <div style="display: flex; gap: var(--space-2);">
+              <button class="btn btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">Previous</button>
+              <button class="btn btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+
+  @if (selectedVendor()) {
+    <div class="modal-overlay" (click)="selectedVendor.set(null)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Vendor Profile</h3>
+          <button class="modal-close" (click)="selectedVendor.set(null)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div style="text-align: center; margin-bottom: var(--space-6);">
+            <div class="vendor-avatar-large">
+              {{ selectedVendor()!.initial }}
+            </div>
+            <h3 style="margin: var(--space-3) 0 var(--space-1);">{{ selectedVendor()!.username || 'Pending Setup' }}</h3>
+            <p class="text-secondary">{{ selectedVendor()!.Email }}</p>
+          </div>
+          <div class="kv-list" style="width: 100%;">
+            <div class="kv-item">
+              <span class="kv-label">Status</span>
+              <span class="kv-value">
+                <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                  <span class="status-dot" 
+                        [class.status-dot--success]="selectedVendor()!.AccountStatus === 'Active'" 
+                        [class.status-dot--warning]="selectedVendor()!.AccountStatus === 'Pending'">
+                  </span>
+                  {{ selectedVendor()!.AccountStatus }}
+                </span>
+              </span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Supplier Score</span>
+              <span class="kv-value" style="font-weight: 600;">⭐ {{ selectedVendor()!.rating }} / 5.0</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Active Purchase Orders</span>
+              <span class="kv-value">{{ selectedVendor()!.activePOs }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Member Since</span>
+              <span class="kv-value">{{ selectedVendor()!.CreatedAt | appDate:'mediumDate' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="selectedVendor.set(null)">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (isInviteModalOpen()) {
+    <div class="modal-overlay" (click)="closeInviteModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Invite New Vendor</h3>
+          <button class="modal-close" (click)="closeInviteModal()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <p class="text-secondary" style="margin-bottom: var(--space-4);">
+            Send an onboarding link to a new supplier. They will be prompted to create an account and configure their catalog.
+          </p>
+
+          @if (inviteSuccess()) {
+            <div class="alert-success" style="margin-bottom: var(--space-4);">
+              {{ inviteSuccess() }}
+            </div>
+          } @else {
+            @if (inviteError()) {
+              <div class="alert-danger" style="margin-bottom: var(--space-4);">
+                {{ inviteError() }}
+              </div>
+            }
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Vendor Email Address</label>
+              <input type="email" 
+                     placeholder="e.g. sales@globalsupplier.com" 
+                     [ngModel]="inviteEmail()"
+                     (ngModelChange)="inviteEmail.set($event)">
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          @if (inviteSuccess()) {
+            <button class="btn btn-primary" (click)="closeInviteModal()">Done</button>
+          } @else {
+            <button class="btn btn-secondary" (click)="closeInviteModal()" [disabled]="inviting()">Cancel</button>
+            <button class="btn btn-primary" (click)="submitInvite()" [disabled]="inviting() || !inviteEmail()">
+              {{ inviting() ? 'Sending...' : 'Send Invite' }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}

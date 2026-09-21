@@ -1,104 +1,17 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ProcurementService, PurchaseOrder } from '../../core/procurement.service';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AppDatePipe } from '../../core/pipes/app-date.pipe';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorAlertComponent } from '../../shared/components/error-alert/error-alert.component';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ErrorAlertComponent],
-  template: `
-    @if (loading()) {
-      <app-loading-spinner message="Loading orders..." [fullPage]="true"></app-loading-spinner>
-    } @else if (error()) {
-      <app-error-alert [message]="error()!"></app-error-alert>
-    } @else {
-      <div class="page p-6">
-        <h1 class="section-title mb-6">Purchase Orders Ledger</h1>
-        <div class="card p-0">
-          <table class="w-100">
-            <thead>
-              <tr>
-                <th>Created</th>
-                <th>Product</th>
-                <th>Supplier</th>
-                <th>Quantity</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (order of orders(); track order.PO_ID) {
-                <tr>
-                  <td class="text-secondary">{{ order.CreatedAt | date:'shortDate' }}</td>
-                  <td>
-                    <div style="font-weight: 500;">{{ order.ProductName }}</div>
-                    <div class="text-secondary" style="font-size: 12px;">SKU: {{ order.SKU }}</div>
-                  </td>
-                  <td>{{ order.VendorName || 'Unknown' }}</td>
-                  <td>{{ order.Quantity }} units</td>
-                  <td>
-                    <span class="status-badge" 
-                          [class.bg-warning]="order.Status === 'Sent to Vendor'" 
-                          [class.bg-info]="order.Status === 'Acknowledged'"
-                          [class.bg-success]="order.Status === 'Fulfilled'">
-                      {{ order.Status }}
-                    </span>
-                  </td>
-                  <td>
-                    @if (order.Status === 'Acknowledged') {
-                      <button class="btn btn-primary btn-sm" (click)="selectedOrder.set(order)">
-                        Mark Received
-                      </button>
-                    } @else if (order.Status === 'Fulfilled') {
-                      <span class="text-secondary">Closed</span>
-                    }
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    }
-
-    @if (selectedOrder()) {
-      <div class="modal-overlay" (click)="closeModal()">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-          <div class="modal-header">
-            <h3 class="modal-title">Receive Inventory</h3>
-            <button class="modal-close" (click)="closeModal()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p class="mb-4 text-secondary">
-              Confirm that you have received the exact amount ordered. This action will restock the database and cannot be undone.
-            </p>
-            <div class="kv-list w-100" style="max-width: 100%;">
-              <div class="kv-item">
-                <span class="kv-label">SKU</span>
-                <span class="kv-value" style="font-family: var(--font-mono);">{{ selectedOrder()?.SKU }}</span>
-              </div>
-              <div class="kv-item">
-                <span class="kv-label">Product</span>
-                <span class="kv-value">{{ selectedOrder()?.ProductName }}</span>
-              </div>
-              <div class="kv-item">
-                <span class="kv-label">Expected Qty</span>
-                <span class="kv-value" style="color: var(--brand-secondary); font-weight: bold;">{{ selectedOrder()?.Quantity }} units</span>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-            <button class="btn btn-primary" style="background: var(--brand-secondary);" (click)="confirmReceive(selectedOrder()!.PO_ID)">Confirm & Restock</button>
-          </div>
-        </div>
-      </div>
-    }
-  `,
-  styles: [`.p-6 { padding: 1.5rem; } .mb-6 { margin-bottom: 1.5rem; }`]
+  imports: [CommonModule, FormsModule, AppDatePipe, LoadingSpinnerComponent, ErrorAlertComponent],
+  templateUrl: './orders.html',
+  styleUrl: './orders.scss'
 })
 export class OrdersComponent implements OnInit {
   orders = signal<PurchaseOrder[]>([]);
@@ -106,17 +19,179 @@ export class OrdersComponent implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
 
-  constructor(private proc: ProcurementService) {}
+  totalPOs = signal<number>(0);
+  pendingFulfillment = signal<number>(0);
+  avgFulfillmentTime = signal<string>('4.2');
+
+  searchQuery = signal('');
+  statusFilter = signal('all');
+  sortBy = signal('newest');
+  showStatusFilter = signal(false);
+  showSortMenu = signal(false);
+  viewOrder = signal<PurchaseOrder | null>(null);
+
+  currentPage = signal(1);
+  pageSize = signal(10);
+  math = Math;
+
+  filteredOrders = computed(() => {
+    const q = this.searchQuery().toLowerCase();
+    const sf = this.statusFilter();
+    const sort = this.sortBy();
+    let results = this.orders().filter(o => {
+      const matchesSearch = o.PO_ID.toLowerCase().includes(q) || 
+        (o.ProductName && o.ProductName.toLowerCase().includes(q)) || 
+        (o.VendorName && o.VendorName.toLowerCase().includes(q));
+      const matchesStatus = sf === 'all' || o.Status === sf;
+      return matchesSearch && matchesStatus;
+    });
+    if (sort === 'oldest') results.sort((a, b) => new Date(a.CreatedAt).getTime() - new Date(b.CreatedAt).getTime());
+    else if (sort === 'qty') results.sort((a, b) => b.Quantity - a.Quantity);
+    else results.sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime());
+    return results;
+  });
+
+  paginatedOrders = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+    return this.filteredOrders().slice(start, end);
+  });
+
+  startRecord = computed(() => {
+    if (this.filteredOrders().length === 0) return 0;
+    return (this.currentPage() - 1) * this.pageSize() + 1;
+  });
+
+  endRecord = computed(() => {
+    const end = this.currentPage() * this.pageSize();
+    const total = this.filteredOrders().length;
+    return end > total ? total : end;
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.filteredOrders().length / this.pageSize()) || 1;
+  });
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+    }
+  }
+
+  goToPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
+  onStatusFilterChange(val: string) {
+    this.statusFilter.set(val);
+    this.currentPage.set(1);
+    this.showStatusFilter.set(false);
+  }
+
+  toggleStatusFilter(event: Event) {
+    event.stopPropagation();
+    this.showStatusFilter.set(!this.showStatusFilter());
+    this.showSortMenu.set(false);
+  }
+
+  onSortChange(val: string) {
+    this.sortBy.set(val);
+    this.currentPage.set(1);
+    this.showSortMenu.set(false);
+  }
+
+  toggleSortMenu(event: Event) {
+    event.stopPropagation();
+    this.showSortMenu.set(!this.showSortMenu());
+    this.showStatusFilter.set(false);
+  }
+
+  @HostListener('document:click')
+  closeDropdowns() {
+    this.showStatusFilter.set(false);
+    this.showSortMenu.set(false);
+  }
+
+  showCreateModal = signal(false);
+  newPO = { productId: '', quantity: 10 };
+  products = signal<any[]>([]);
+
+  constructor(private proc: ProcurementService, private http: HttpClient) {}
 
   ngOnInit() {
     this.load();
+    this.proc.getInventory().subscribe(data => {
+      this.products.set(data);
+      if (data.length > 0) this.newPO.productId = data[0].ProductID;
+    });
   }
 
   load() {
     this.loading.set(true);
     this.proc.getAllOrders().subscribe({
-      next: (data) => { this.orders.set(data); this.loading.set(false); },
-      error: () => { this.error.set('Failed to load orders.'); this.loading.set(false); }
+      next: (data) => { 
+        this.orders.set(data); 
+        this.calculateMetrics(data);
+        this.loading.set(false); 
+      },
+      error: () => { 
+        this.error.set('Failed to load orders.'); 
+        this.loading.set(false); 
+      }
+    });
+  }
+
+  calculateMetrics(data: PurchaseOrder[]) {
+    this.totalPOs.set(data.length);
+    const pending = data.filter(o => o.Status !== 'Fulfilled').length;
+    this.pendingFulfillment.set(pending);
+  }
+
+  exportCSV() {
+    const data = this.filteredOrders();
+    if (!data.length) return;
+    const headers = ['PO_ID', 'Date', 'Product', 'Supplier', 'Quantity', 'Status'];
+    const rows = data.map(item => [
+      item.PO_ID, 
+      item.CreatedAt,
+      `"${item.ProductName}"`, 
+      `"${item.VendorName || ''}"`, 
+      item.Quantity, 
+      item.Status
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "orders_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  submitPO() {
+    if (!this.newPO.productId || this.newPO.quantity <= 0) return;
+    this.http.post('/api/procurement/orders', this.newPO).subscribe({
+      next: () => {
+        this.showCreateModal.set(false);
+        this.newPO = { productId: this.products()[0]?.ProductID || '', quantity: 10 };
+        this.load();
+      },
+      error: () => alert('Failed to create Purchase Order')
     });
   }
 
@@ -133,4 +208,5 @@ export class OrdersComponent implements OnInit {
   closeModal() {
     this.selectedOrder.set(null);
   }
+
 }

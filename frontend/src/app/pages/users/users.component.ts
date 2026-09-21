@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, inject, ElementRef, HostListener, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
@@ -34,7 +34,7 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
                   </div>
                   <div class="custom-options" *ngIf="dropdownOpen">
                     <div class="custom-option" 
-                         *ngFor="let role of roles" 
+                         *ngFor="let role of roles()" 
                          (click)="selectRole(role, $event)"
                          [class.selected]="role.RoleID === roleId">
                       {{ role.RoleName }}
@@ -61,11 +61,19 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
         <!-- Users Table Column -->
         <div class="layout-main">
           <div class="card table-card">
-            <h2 class="card-title">Existing Users</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+              <h2 class="card-title" style="margin-bottom: 0;">Existing Users</h2>
+              <div class="toolbar-search" style="position: relative; width: 300px;">
+                <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 20px;">search</span>
+                <input type="text" placeholder="Search by email or role..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)" style="width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border); border-radius: var(--radius-md); background: transparent; color: var(--text-primary); outline: none;">
+              </div>
+            </div>
+            
             <div class="table-container">
               <table class="table">
                 <thead>
                   <tr>
+                    <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
                     <th>Status</th>
@@ -74,13 +82,13 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let user of users">
+                  <tr *ngFor="let user of paginatedUsers()">
                     <td>
                       <div class="user-email-cell">
-                        <div class="user-avatar-small">{{ user.Email.charAt(0).toUpperCase() }}</div>
-                        {{ user.Email }}
+                        <span style="font-weight: 500;">{{ user.username || '—' }}</span>
                       </div>
                     </td>
+                    <td class="text-secondary">{{ user.Email }}</td>
                     <td><span class="badge">{{ user.RoleName }}</span></td>
                     <td>
                       <span class="status-badge" [class.active]="user.AccountStatus === 'Active'">
@@ -99,15 +107,26 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
                       </div>
                     </td>
                   </tr>
-                  <tr *ngIf="users.length === 0">
+                  <tr *ngIf="filteredUsers().length === 0">
                     <td colspan="5" class="text-center py-8 text-muted">
                       <span class="material-symbols-outlined empty-icon">group_off</span>
-                      <p>No users found.</p>
+                      <p>No users found matching your search.</p>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            <div *ngIf="filteredUsers().length > 0" style="display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-4); margin-top: var(--space-4); border-top: 1px solid var(--border);">
+              <div class="text-secondary" style="font-size: var(--text-sm);">
+                Showing {{ startRecord() }} to {{ endRecord() }} of {{ filteredUsers().length }} results
+              </div>
+              <div style="display: flex; gap: var(--space-2);">
+                <button class="btn btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">Previous</button>
+                <button class="btn btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -140,7 +159,7 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
               </div>
               <div class="custom-options" *ngIf="editDropdownOpen">
                 <div class="custom-option" 
-                     *ngFor="let role of roles" 
+                     *ngFor="let role of roles()" 
                      (click)="selectEditRole(role, $event)"
                      [class.selected]="role.RoleID === editRoleId">
                   {{ role.RoleName }}
@@ -340,18 +359,6 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
       gap: 12px;
       font-weight: 500;
     }
-    .user-avatar-small {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--brand-primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-    }
     
     .badge {
       background: var(--gray-100);
@@ -502,9 +509,57 @@ export class UsersComponent implements OnInit {
   private http = inject(HttpClient);
   private elementRef = inject(ElementRef);
 
-  users: any[] = [];
-  roles: any[] = [];
+  users = signal<any[]>([]);
+  roles = signal<any[]>([]);
   
+  searchQuery = signal('');
+  currentPage = signal(1);
+  pageSize = signal(10);
+  math = Math;
+
+  filteredUsers = computed(() => {
+    const q = this.searchQuery().toLowerCase();
+    return this.users().filter(u => u.Email.toLowerCase().includes(q) || u.RoleName.toLowerCase().includes(q));
+  });
+
+  paginatedUsers = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    const end = start + this.pageSize();
+    return this.filteredUsers().slice(start, end);
+  });
+
+  startRecord = computed(() => {
+    if (this.filteredUsers().length === 0) return 0;
+    return (this.currentPage() - 1) * this.pageSize() + 1;
+  });
+
+  endRecord = computed(() => {
+    const end = this.currentPage() * this.pageSize();
+    const total = this.filteredUsers().length;
+    return end > total ? total : end;
+  });
+
+  totalPages = computed(() => {
+    return Math.ceil(this.filteredUsers().length / this.pageSize()) || 1;
+  });
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.set(this.currentPage() + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.set(this.currentPage() - 1);
+    }
+  }
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
   email = '';
   roleId: number | null = null;
   loading = false;
@@ -520,12 +575,12 @@ export class UsersComponent implements OnInit {
   editDropdownOpen = false;
 
   get selectedRoleName(): string {
-    const role = this.roles.find(r => r.RoleID === this.roleId);
+    const role = this.roles().find(r => r.RoleID === this.roleId);
     return role ? role.RoleName : 'Select Role';
   }
 
   getEditRoleName(): string {
-    const role = this.roles.find(r => r.RoleID === this.editRoleId);
+    const role = this.roles().find(r => r.RoleID === this.editRoleId);
     return role ? role.RoleName : 'Select Role';
   }
 
@@ -549,7 +604,7 @@ export class UsersComponent implements OnInit {
   loadRoles() {
     this.http.get<any[]>('/api/users/roles').subscribe({
       next: (roles) => {
-        this.roles = roles;
+        this.roles.set(roles);
         if (roles.length > 0) this.roleId = roles[0].RoleID;
       },
       error: (err) => console.error(err)
@@ -558,7 +613,7 @@ export class UsersComponent implements OnInit {
 
   loadUsers() {
     this.http.get<any[]>('/api/users').subscribe({
-      next: (users) => this.users = users,
+      next: (users) => this.users.set(users),
       error: (err) => console.error(err)
     });
   }
@@ -613,8 +668,8 @@ export class UsersComponent implements OnInit {
 
   editUser(user: any) {
     this.userToEdit = user;
-    const role = this.roles.find(r => r.RoleName === user.RoleName);
-    this.editRoleId = role ? role.RoleID : this.roles[0]?.RoleID;
+    const role = this.roles().find(r => r.RoleName === user.RoleName);
+    this.editRoleId = role ? role.RoleID : this.roles()[0]?.RoleID;
   }
   
   closeEditModal() {

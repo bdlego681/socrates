@@ -11,6 +11,12 @@ export async function getDashboardData(req: Request, res: Response) {
 
   const recentActivity = await ActivityService.getRecentActivity(user.id, 5);
 
+  const actionItemsResult = await pool.request().query(`
+    SELECT ActionID as id, Title as title, Description as description, ActionType as actionType, Status as status, CreatedAt as createdAt
+    FROM dbo.ActionItems
+    ORDER BY CreatedAt DESC
+  `);
+
   const dashboardData = {
     user: {
       id: user.id,
@@ -23,6 +29,7 @@ export async function getDashboardData(req: Request, res: Response) {
       passwordChangedAt: userRow?.password_changed_at
     },
     recentActivity,
+    actionItems: actionItemsResult.recordset,
     notifications: [],
     widgets: []
   };

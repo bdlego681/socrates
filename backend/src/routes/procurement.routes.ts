@@ -17,6 +17,7 @@ function requireVendor(req: Request, res: Response, next: NextFunction) {
 router.get('/tasks', requireAuth, requireAdmin, procController.getTasks);
 router.post('/orders', requireAuth, requireAdmin, procController.approveOrder);
 router.get('/inventory', requireAuth, requireAdmin, procController.getInventory);
+router.post('/products', requireAuth, requireAdmin, procController.addProduct);
 router.get('/orders', requireAuth, requireAdmin, procController.getAllOrders);
 router.post('/orders/:id/receive', requireAuth, requireAdmin, procController.markOrderReceived);
 router.get('/analytics', requireAuth, requireAdmin, procController.getAnalytics);

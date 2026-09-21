@@ -1,5 +1,18 @@
 import { pool, sql } from '../pool.js';
 
+export async function addProduct(name: string, sku: string, vendorUserId: string, unitCost: number, leadTimeDays: number) {
+  await pool.request()
+    .input('name', sql.NVarChar, name)
+    .input('sku', sql.NVarChar, sku)
+    .input('vendor', sql.UniqueIdentifier, vendorUserId)
+    .input('cost', sql.Float, unitCost)
+    .input('lead', sql.Int, leadTimeDays)
+    .query(`
+      INSERT INTO dbo.Products (Name, SKU, VendorUserID, UnitCost, LeadTimeDays, CurrentStock, AverageDailySales, MinimumStockThreshold)
+      VALUES (@name, @sku, @vendor, @cost, @lead, 0, 0, 0)
+    `);
+}
+
 export interface Product {
   ProductID: string;
   SKU: string;
@@ -141,7 +154,7 @@ export async function markOrderReceived(poId: string) {
     `);
 }
 
-export async function getAnalytics() {
+export async function getAnalytics(months: number = 6) {
   const capitalResult = await pool.request().query(`
     SELECT SUM(CurrentStock * UnitCost) as TotalCapitalTied 
     FROM dbo.Products
@@ -162,23 +175,28 @@ export async function getAnalytics() {
   const vendorRisk = await pool.request().query(`
     SELECT u.username as VendorName, 
            AVG(p.LeadTimeDays) as AvgLeadTime,
-           COUNT(CASE WHEN (p.CurrentStock / NULLIF(p.AverageDailySales, 0)) <= (p.LeadTimeDays + 3) THEN 1 END) as HighRiskCount
+           COUNT(*) as ProductCount
     FROM dbo.Products p
-    JOIN dbo.users u ON p.VendorUserID = u.id
+    JOIN dbo.Users u ON p.VendorUserID = u.id
     GROUP BY u.username
+    ORDER BY AvgLeadTime DESC
   `);
 
-  // Dummy historical capital data for line chart
-  const historicalCapital = Array.from({length: 6}, (_, i) => ({
-    month: new Date(new Date().setMonth(new Date().getMonth() - (5 - i))).toLocaleString('default', { month: 'short' }),
-    value: (capitalResult.recordset[0].TotalCapitalTied || 0) * (1 - (5 - i) * 0.05 + (Math.random() * 0.04 - 0.02))
-  }));
+  const historicalData = await pool.request()
+    .input('m', sql.Int, months)
+    .query(`
+      SELECT TOP (@m) MetricMonth as month, TotalCapitalTied as value 
+      FROM dbo.HistoricalMetrics 
+      ORDER BY SortOrder DESC
+  `);
+
+  const historicalArr = historicalData.recordset.reverse();
 
   return {
     totalCapitalTied: capitalResult.recordset[0].TotalCapitalTied || 0,
     highRiskItems: riskResult.recordset[0].HighRiskItems || 0,
     topVelocity: topVelocity.recordset,
     vendorRisk: vendorRisk.recordset,
-    historicalCapital
+    historicalCapital: historicalArr
   };
 }

@@ -1,0 +1,208 @@
+<div class="landing-page about-page">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-content">
+      <a routerLink="/" class="brand-logo-link" style="display: inline-block; transform: scale(2.5); transform-origin: left center;">
+        <img src="/assets/whitelogo-withtext.jpg" alt="Socrates" class="brand-logo" style="height: 60px; pointer-events: none;">
+      </a>
+      <div class="nav-links" style="display: flex; align-items: center; gap: 24px;">
+        <a routerLink="/" fragment="features" class="nav-link" style="color: white; text-decoration: none; font-weight: 500;">Platform</a>
+        <a routerLink="/pricing" class="nav-link" style="color: white; text-decoration: none; font-weight: 500;">Pricing</a>
+        <a routerLink="/about" class="nav-link" style="color: white; text-decoration: none; font-weight: 500;">Company</a>
+        <div style="display: flex; gap: 12px; margin-left: 16px;">
+          <a href="javascript:void(0)" (click)="openContact()" class="btn btn-highlight" style="background: var(--brand-highlight); color: var(--brand-primary); padding: 6px 16px; border-radius: 4px; font-weight: 600; text-decoration: none;">Schedule Demo</a>
+          <a routerLink="/login" class="btn btn-teal" style="background: var(--brand-secondary); color: white; padding: 6px 16px; border-radius: 4px; font-weight: 600; text-decoration: none;">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="about-hero" style="background: var(--bg-gray); padding: 80px 0; text-align: center; border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="eyebrow text-teal" style="color: var(--brand-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">Our Story</div>
+      <h1 style="font-size: 48px; color: var(--brand-primary); margin-bottom: 24px; font-weight: 700;">Building the Future of Procurement</h1>
+      <p style="font-size: 20px; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.6;">
+        Socrates was founded in 2026 out of a simple observation: modern supply chains are incredibly complex, yet the tools used to manage them are stuck in the past. Our founders, veterans of global logistics and enterprise software, experienced firsthand the millions of dollars tied up in dead stock and the constant fire drills caused by unexpected stockouts. 
+      </p>
+      <p style="font-size: 20px; color: var(--text-secondary); max-width: 800px; margin: 24px auto 0; line-height: 1.6;">
+        We built Socrates to bring algorithmic intelligence to procurement—giving teams the power to automate the mundane and focus on strategic vendor relationships.
+      </p>
+    </div>
+  </section>
+
+  <!-- By The Numbers -->
+  <section class="stats-section" style="background: var(--brand-primary); padding: 60px 0; color: white;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; text-align: center;">
+        <div>
+          <div style="font-size: 48px; font-weight: 700; color: var(--brand-highlight); margin-bottom: 8px;">2024</div>
+          <div style="font-size: 16px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Founded</div>
+        </div>
+        <div>
+          <div style="font-size: 48px; font-weight: 700; color: var(--brand-highlight); margin-bottom: 8px;">$15M</div>
+          <div style="font-size: 16px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Series A Raised</div>
+        </div>
+        <div>
+          <div style="font-size: 48px; font-weight: 700; color: var(--brand-highlight); margin-bottom: 8px;">$2B+</div>
+          <div style="font-size: 16px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Inventory Managed</div>
+        </div>
+        <div>
+          <div style="font-size: 48px; font-weight: 700; color: var(--brand-highlight); margin-bottom: 8px;">42%</div>
+          <div style="font-size: 16px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">Avg Stockout Reduction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Values -->
+  <section class="values-section" style="padding: 100px 0; background: var(--bg-gray);">
+    <div class="container">
+      <h2 style="font-size: 36px; color: var(--brand-primary); text-align: center; margin-bottom: 64px; font-weight: 700;">Our Core Values</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+        <div style="background: white; padding: 40px; border-radius: 12px; border: 1px solid var(--border);">
+          <div style="width: 48px; height: 48px; background: rgba(58, 185, 176, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-secondary); font-size: 24px; font-weight: 700; margin-bottom: 24px;">1</div>
+          <h3 style="font-size: 20px; color: var(--brand-primary); margin-bottom: 16px;">Data Over Intuition</h3>
+          <p style="color: var(--text-secondary); line-height: 1.6;">We believe human intuition is powerful, but supply chain complexity requires mathematical rigor. We build systems that replace gut-feeling with algorithmic certainty.</p>
+        </div>
+        <div style="background: white; padding: 40px; border-radius: 12px; border: 1px solid var(--border);">
+          <div style="width: 48px; height: 48px; background: rgba(58, 185, 176, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-secondary); font-size: 24px; font-weight: 700; margin-bottom: 24px;">2</div>
+          <h3 style="font-size: 20px; color: var(--brand-primary); margin-bottom: 16px;">Radical Transparency</h3>
+          <p style="color: var(--text-secondary); line-height: 1.6;">Vendor relationships shouldn't be black boxes. We shine a light on performance metrics so both buyers and suppliers can optimize together.</p>
+        </div>
+        <div style="background: white; padding: 40px; border-radius: 12px; border: 1px solid var(--border);">
+          <div style="width: 48px; height: 48px; background: rgba(58, 185, 176, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-secondary); font-size: 24px; font-weight: 700; margin-bottom: 24px;">3</div>
+          <h3 style="font-size: 20px; color: var(--brand-primary); margin-bottom: 16px;">Built for Speed</h3>
+          <p style="color: var(--text-secondary); line-height: 1.6;">In procurement, time is literal money. Our platform is relentlessly optimized for fast load times, automated decisioning, and rapid user workflows.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="team-section" style="padding: 100px 0; background: white;">
+    <div class="container">
+      <h2 style="font-size: 36px; color: var(--brand-primary); text-align: center; margin-bottom: 64px; font-weight: 700;">Meet the Team</h2>
+      
+      <div class="team-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+        
+        <!-- Team Member 1 -->
+        <div class="team-member" style="text-align: center;">
+          <img src="https://i.pravatar.cc/300?img=11" alt="Brant Dattilo" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin: 0 auto 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+          <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Brant Dattilo</h3>
+          <div style="color: var(--brand-secondary); font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;">CEO & Co-Founder</div>
+          <p style="color: var(--text-secondary); line-height: 1.5; font-size: 15px;">Former VP of Supply Chain at GlobalLogistics. Brant oversees product vision and business strategy, ensuring Socrates solves the most painful inventory challenges.</p>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="team-member" style="text-align: center;">
+          <img src="https://i.pravatar.cc/300?img=5" alt="Sarah Jenkins" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin: 0 auto 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+          <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Sarah Jenkins</h3>
+          <div style="color: var(--brand-secondary); font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;">CTO & Co-Founder</div>
+          <p style="color: var(--text-secondary); line-height: 1.5; font-size: 15px;">A veteran systems architect who spent a decade building low-latency trading engines. Sarah leads our engineering teams and algorithmic modeling.</p>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="team-member" style="text-align: center;">
+          <img src="https://i.pravatar.cc/300?img=12" alt="Michael Chang" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin: 0 auto 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+          <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Michael Chang</h3>
+          <div style="color: var(--brand-secondary); font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;">Head of Product</div>
+          <p style="color: var(--text-secondary); line-height: 1.5; font-size: 15px;">Obsessed with user experience and simplifying complex data. Michael previously led enterprise UX at Salesforce and ensures our Action Center feels magical.</p>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="team-member" style="text-align: center;">
+          <img src="https://i.pravatar.cc/300?img=9" alt="Emily Thorne" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin: 0 auto 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+          <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Emily Thorne</h3>
+          <div style="color: var(--brand-secondary); font-weight: 600; margin-bottom: 16px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.5px;">VP of Customer Success</div>
+          <p style="color: var(--text-secondary); line-height: 1.5; font-size: 15px;">Dedicated to making sure our customers actually achieve zero dead stock. Emily leads implementation, training, and ongoing strategic support.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-banner" style="background: var(--brand-primary); padding: 80px 0; color: white;">
+    <div class="container text-center">
+      <h2 class="cta-title" style="font-size: 36px; margin-bottom: 16px;">Want to work with us?</h2>
+      <p class="cta-desc" style="font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 32px;">We're always looking for talented engineers and supply chain experts.</p>
+      <a href="javascript:void(0)" (click)="openContact()" class="btn btn-lg btn-highlight" style="background: var(--brand-highlight); color: var(--brand-primary); padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 18px; text-decoration: none;">View Open Roles</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="company" class="footer" style="background: var(--bg-gray); padding: 80px 0 40px; border-top: 1px solid var(--border);">
+    <div class="container">
+      <div class="footer-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px;">
+        <div class="footer-brand">
+          <a routerLink="/" style="display: inline-block; cursor: pointer; transform: scale(3.5); transform-origin: left center; margin-bottom: 16px; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+            <img src="/assets/logo-new-withtext.jpg" alt="Socrates Logo" class="brand-logo-footer" style="height: 60px; pointer-events: none;">
+          </a>
+        </div>
+        <div class="footer-links" style="display: flex; flex-direction: column; gap: 12px;">
+          <h4 style="color: var(--brand-primary); font-size: 16px; margin-bottom: 8px;">Platform</h4>
+          <a routerLink="/" fragment="features" style="color: var(--text-secondary); text-decoration: none;">Velocity Tracking</a>
+          <a routerLink="/" fragment="action-center" style="color: var(--text-secondary); text-decoration: none;">Automated POs</a>
+          <a routerLink="/" fragment="vendor-risk" style="color: var(--text-secondary); text-decoration: none;">Vendor Analytics</a>
+          <a routerLink="/pricing" style="color: var(--text-secondary); text-decoration: none;">Pricing</a>
+        </div>
+        <div class="footer-links" style="display: flex; flex-direction: column; gap: 12px;">
+          <h4 style="color: var(--brand-primary); font-size: 16px; margin-bottom: 8px;">Company</h4>
+          <a routerLink="/about" style="color: var(--text-secondary); text-decoration: none;">About Us</a>
+          <a href="https://linkedin.com" target="_blank" style="color: var(--text-secondary); text-decoration: none;">Careers</a>
+          <a href="https://medium.com" target="_blank" style="color: var(--text-secondary); text-decoration: none;">Blog</a>
+        </div>
+        <div class="footer-links" style="display: flex; flex-direction: column; gap: 12px;">
+          <h4 style="color: var(--brand-primary); font-size: 16px; margin-bottom: 8px;">Connect</h4>
+          <a href="javascript:void(0)" (click)="openContact()" style="color: var(--text-secondary); text-decoration: none;">Contact Sales</a>
+          <a href="mailto:support@socrates.local" style="color: var(--text-secondary); text-decoration: none;">Help & Support</a>
+          <a href="https://x.com" target="_blank" style="color: var(--text-secondary); text-decoration: none;">Twitter / X</a>
+        </div>
+      </div>
+      <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid var(--border);">
+        <p class="copyright" style="color: var(--text-muted); font-size: 14px;">&copy; 2026 Socrates Procurement OS. All rights reserved.</p>
+        <div class="legal-links" style="display: flex; gap: 24px;">
+          <a routerLink="/privacy-policy" style="color: var(--text-muted); font-size: 14px; text-decoration: none;">Privacy Policy</a>
+          <a routerLink="/terms" style="color: var(--text-muted); font-size: 14px; text-decoration: none;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+@if (showContactModal()) {
+  <div class="modal-overlay" (click)="closeContact()" style="display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999;">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h3 style="font-size: 24px; font-weight: 700; margin: 0;">Contact Sales</h3>
+        <button (click)="closeContact()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray-500);">&times;</button>
+      </div>
+      
+      @if (contactFormSubmitted()) {
+        <div style="text-align: center; padding: 40px 0;">
+          <div style="width: 64px; height: 64px; background: var(--success); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 32px;">&#10003;</div>
+          <h4 style="font-size: 20px; margin-bottom: 8px;">Message Sent!</h4>
+          <p style="color: var(--gray-500);">Our enterprise sales team will be in touch shortly.</p>
+        </div>
+      } @else {
+        <form (submit)="submitContact($event)">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Work Email</label>
+            <input type="email" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="name@company.com">
+          </div>
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Company Name</label>
+            <input type="text" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;" placeholder="Acme Corp">
+          </div>
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label style="display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">How can we help?</label>
+            <textarea rows="4" style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; resize: vertical;" placeholder="Tell us about your supply chain volume..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-highlight w-100" style="width: 100%; padding: 12px; font-size: 16px; font-weight: 600; background: var(--brand-highlight); color: var(--brand-primary); border: none; cursor: pointer; border-radius: 6px;">Request Demo</button>
+        </form>
+      }
+    </div>
+  </div>
+}
+

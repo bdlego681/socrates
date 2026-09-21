@@ -1,0 +1,95 @@
+@if (loading()) {
+  <app-loading-spinner message="Loading analytics..." [fullPage]="true"></app-loading-spinner>
+} @else if (error()) {
+  <app-error-alert [message]="error()!"></app-error-alert>
+} @else {
+  <div class="analytics-container">
+    
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Analytics Dashboard</h2>
+        <p class="text-secondary">High-level reporting and risk matrices for your supply chain.</p>
+      </div>
+      <div class="header-actions">
+        <div style="position: relative;">
+          <button class="btn btn-secondary" (click)="toggleDateRange($event)">
+            <span class="material-symbols-outlined" style="margin-right: var(--space-2);">calendar_today</span> 
+            Last {{ dateRange() }} Months
+            <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+          </button>
+          @if (showDateRange()) {
+            <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+              <button class="dropdown-item" (click)="switchDateRange('3')">Last 3 Months</button>
+              <button class="dropdown-item" (click)="switchDateRange('6')">Last 6 Months</button>
+              <button class="dropdown-item" (click)="switchDateRange('12')">Last 12 Months</button>
+            </div>
+          }
+        </div>
+        <button class="btn btn-primary" (click)="exportCSV()">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">download</span> Export Report
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Banner -->
+    <div class="kpi-banner">
+      <div class="kpi-block">
+        <div class="kpi-label">Capital Tied in Inventory</div>
+        <div class="kpi-value" style="color: var(--brand-primary);">
+          {{ data()?.totalCapitalTied | appCurrency }}
+        </div>
+      </div>
+      <div class="kpi-divider"></div>
+      <div class="kpi-block">
+        <div class="kpi-label">High Risk Items (Stockout)</div>
+        <div class="kpi-value" [style.color]="data()?.highRiskItems > 0 ? 'var(--color-error)' : 'var(--color-success)'">
+          {{ data()?.highRiskItems }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Width Chart -->
+    <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+      <div class="table-card">
+        <h3 class="chart-title">Historical Capital Value</h3>
+        <p class="chart-subtitle">Capital bound in inventory levels over the preceding 6 months.</p>
+        <div class="chart-container">
+          <canvas baseChart
+                  [data]="lineChartData"
+                  [options]="lineChartOptions"
+                  [type]="'line'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Split Charts -->
+    <div class="dashboard-grid" style="margin-bottom: 0;">
+      <div class="table-card">
+        <h3 class="chart-title">Top Velocity vs Current Stock</h3>
+        <p class="chart-subtitle">Are we holding enough of our fastest moving items?</p>
+        <div class="chart-container">
+          <canvas baseChart
+                  [data]="barChartData"
+                  [options]="barChartOptions"
+                  [type]="'bar'">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <h3 class="chart-title">Vendor Risk Matrix</h3>
+        <p class="chart-subtitle">High risk items plotted against average lead times.</p>
+        <div class="chart-container">
+          <canvas baseChart
+                  [data]="scatterChartData"
+                  [options]="scatterChartOptions"
+                  [type]="'scatter'">
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+}
+

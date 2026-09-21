@@ -3,67 +3,140 @@
 } @else if (error()) {
   <app-error-alert [message]="error()!"></app-error-alert>
 } @else {
-  <div class="page p-6">
+  <div class="dashboard-container">
     @if (auth.user()?.RoleName === 'Admin') {
-      <div class="grid" style="grid-template-columns: 1fr;">
-        <div class="section mb-6">
-          <h2 class="section-title">Action Center</h2>
-          <p class="text-secondary mb-4">Urgent procurement tasks that require your approval.</p>
-          
-          @if (tasks().length === 0) {
-            <div class="card p-4 text-center text-secondary">
-              <span class="material-symbols-outlined mb-2" style="font-size: 32px;">check_circle</span>
-              <p>No urgent actions required. Inventory is healthy.</p>
-            </div>
-          } @else {
-            <div class="card p-0">
-              <table class="w-100">
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Warning</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (task of tasks(); track task.product.ProductID) {
-                    <tr>
-                      <td>
-                        <div style="font-weight: 500;">{{ task.product.Name }}</div>
-                        <div class="text-secondary" style="font-size: 12px;">SKU: {{ task.product.SKU }}</div>
-                      </td>
-                      <td>
-                        <span [class.text-danger]="task.urgency === 'high'">{{ task.message }}</span>
-                      </td>
-                      <td>
-                        @if (task.type === 'REORDER') {
-                          <button class="btn btn-primary btn-sm" (click)="selectedTask.set(task)">
-                            Review PO
-                          </button>
-                        } @else {
-                          <button class="btn btn-secondary btn-sm" style="color: var(--danger);">Liquidate</button>
-                        }
-                      </td>
-                    </tr>
+      <div class="dashboard-grid">
+        <div class="dashboard-main">
+          <div class="section">
+            <div class="section-header" style="margin-bottom: var(--space-6);">
+              <div>
+                <h2 class="section-title">Action Center</h2>
+                <p class="text-secondary" style="margin-bottom: var(--space-4);">Urgent procurement tasks that require your approval.</p>
+              </div>
+              <div style="display: flex; gap: var(--space-4); align-items: center;">
+                <div class="toolbar-search" style="position: relative; width: 250px;">
+                  <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 20px;">search</span>
+                  <input type="text" placeholder="Search tasks..." [ngModel]="taskSearchQuery()" (ngModelChange)="onTaskSearchChange($event)" style="width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border); border-radius: var(--radius-md); background: transparent; color: var(--text-primary); outline: none;">
+                </div>
+                <div style="position: relative;">
+                  <button class="btn btn-secondary" (click)="toggleTaskFilter($event)">
+                    <span class="material-symbols-outlined" style="margin-right: var(--space-2);">filter_list</span> 
+                    {{ taskFilter() === 'all' ? 'All' : (taskFilter() === 'high' ? 'High' : 'Medium') }}
+                    <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+                  </button>
+                  @if (showTaskFilter()) {
+                    <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                      <button class="dropdown-item" (click)="onTaskFilterChange('all')">All</button>
+                      <button class="dropdown-item" (click)="onTaskFilterChange('high')">High Urgency</button>
+                      <button class="dropdown-item" (click)="onTaskFilterChange('medium')">Medium Urgency</button>
+                    </div>
                   }
-                </tbody>
-              </table>
+                </div>
+              </div>
             </div>
-          }
+            
+            @if (filteredTasks().length === 0) {
+              <div class="empty-state" style="text-align: center;">
+                <span class="material-symbols-outlined empty-icon" style="margin-bottom: var(--space-2);">check_circle</span>
+                <p class="text-secondary">No urgent actions required. Inventory is healthy.</p>
+              </div>
+            } @else {
+              <div class="table-card">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Warning</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (task of paginatedTasks(); track task.product.ProductID) {
+                      <tr>
+                        <td>
+                          <div style="font-weight: 500; color: var(--brand-primary);">{{ task.product.Name }}</div>
+                          <div class="text-secondary" style="font-family: var(--font-mono); font-size: var(--text-sm); margin-top: var(--space-1);">SKU: {{ task.product.SKU }}</div>
+                        </td>
+                        <td>
+                          <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                            <span class="status-dot" [class.status-dot--error]="task.urgency === 'high'" [class.status-dot--warning]="task.urgency === 'medium'"></span>
+                            {{ task.message }}
+                          </span>
+                        </td>
+                        <td style="text-align: right;">
+                          <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                            @if (task.type === 'REORDER') {
+                              <button class="btn btn-primary" (click)="selectedTask.set(task)">
+                                Review PO
+                              </button>
+                            } @else {
+                              <button class="btn btn-secondary" style="color: var(--color-error); border-color: var(--color-error);">Liquidate</button>
+                            }
+                            <button class="btn btn-secondary" title="Dismiss Task" (click)="dismissTask(task)" style="padding: 0 var(--space-2);">
+                              <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border);">
+                  <div class="text-secondary" style="font-size: var(--text-sm);">
+                    Showing {{ taskStartRecord() }} to {{ taskEndRecord() }} of {{ filteredTasks().length }} results
+                  </div>
+                  <div style="display: flex; gap: var(--space-2);">
+                    <button class="btn btn-secondary" [disabled]="taskCurrentPage() === 1" (click)="taskPrevPage()">Previous</button>
+                    <button class="btn btn-secondary" [disabled]="taskCurrentPage() === taskTotalPages()" (click)="taskNextPage()">Next</button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="dashboard-sidebar">
+          <div class="section">
+            <h2 class="section-title">System Activity</h2>
+            <p class="text-secondary" style="margin-bottom: var(--space-4);">Live updates from your supply chain.</p>
+            <div class="activity-card" style="background: var(--bg-surface); border-radius: var(--radius-lg); overflow: hidden;">
+              <div class="activity-feed">
+                @for (activity of activities(); track activity.id) {
+                  <div class="activity-item" style="position: relative;">
+                    <div class="activity-icon" [style.color]="activity.color">
+                      <span class="material-symbols-outlined">{{ activity.icon }}</span>
+                    </div>
+                    <div class="activity-content" style="padding-right: var(--space-6);">
+                      <div class="activity-text">{{ activity.text }}</div>
+                      <div class="activity-time">{{ activity.time }}</div>
+                    </div>
+                    <button class="btn btn-secondary" title="Dismiss" (click)="dismissNotification(activity)" style="position: absolute; right: var(--space-4); top: 50%; transform: translateY(-50%); padding: 0 var(--space-1); border: none; background: transparent; color: var(--text-muted);">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+                    </button>
+                  </div>
+                }
+                @if (activities().length === 0) {
+                  <div style="padding: var(--space-6); text-align: center; color: var(--text-muted);">
+                    <p>No recent activity.</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     } @else if (auth.user()?.RoleName === 'Vendor') {
-      <div class="section mb-6">
+      <div class="section">
         <h2 class="section-title">Vendor Portal: Purchase Orders</h2>
-        <p class="text-secondary mb-4">Orders awaiting your acknowledgment and fulfillment.</p>
+        <p class="text-secondary" style="margin-bottom: var(--space-4);">Orders awaiting your acknowledgment and fulfillment.</p>
         
         @if (vendorOrders().length === 0) {
-          <div class="card p-4 text-center text-secondary">
-            <p>No purchase orders assigned to you yet.</p>
+          <div class="empty-state" style="text-align: center;">
+            <p class="text-secondary">No purchase orders assigned to you yet.</p>
           </div>
         } @else {
-          <div class="card p-0">
-            <table class="w-100">
+          <div class="table-card">
+            <table>
               <thead>
                 <tr>
                   <th>PO Date</th>
@@ -76,20 +149,21 @@
               <tbody>
                 @for (order of vendorOrders(); track order.PO_ID) {
                   <tr>
-                    <td>{{ order.CreatedAt | date:'short' }}</td>
+                    <td>{{ order.CreatedAt | appDate:'short' }}</td>
                     <td>
                       <div style="font-weight: 500;">{{ order.ProductName }}</div>
-                      <div class="text-secondary" style="font-size: 12px;">SKU: {{ order.SKU }}</div>
+                      <div class="text-secondary" style="font-size: var(--text-xs);">SKU: {{ order.SKU }}</div>
                     </td>
                     <td>{{ order.Quantity }} units</td>
                     <td>
-                      <span class="status-badge" [class.bg-warning]="order.Status === 'Sent to Vendor'" [class.bg-success]="order.Status === 'Acknowledged'">
+                      <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                        <span class="status-dot" [class.status-dot--warning]="order.Status === 'Sent to Vendor'" [class.status-dot--success]="order.Status === 'Acknowledged'"></span>
                         {{ order.Status }}
                       </span>
                     </td>
                     <td>
                       @if (order.Status === 'Sent to Vendor') {
-                        <button class="btn btn-primary btn-sm" (click)="acknowledge(order.PO_ID)">Acknowledge</button>
+                        <button class="btn btn-primary" (click)="acknowledge(order.PO_ID)">Acknowledge</button>
                       }
                     </td>
                   </tr>
@@ -112,17 +186,17 @@
           </button>
         </div>
         <div class="modal-body">
-          <p class="mb-4 text-secondary">
+          <p class="text-secondary" style="margin-bottom: var(--space-4);">
             You are about to approve a formal purchase order for <strong>{{ selectedTask()?.product?.Name }}</strong>.
           </p>
-          <div class="kv-list w-100" style="max-width: 100%;">
+          <div class="kv-list" style="width: 100%;">
             <div class="kv-item">
               <span class="kv-label">SKU</span>
               <span class="kv-value" style="font-family: var(--font-mono);">{{ selectedTask()?.product?.SKU }}</span>
             </div>
             <div class="kv-item">
               <span class="kv-label">Current Stock</span>
-              <span class="kv-value text-danger font-weight-bold">{{ selectedTask()?.product?.CurrentStock }} units</span>
+              <span class="kv-value" style="color: var(--color-error); font-weight: 600;">{{ selectedTask()?.product?.CurrentStock }} units</span>
             </div>
             <div class="kv-item">
               <span class="kv-label">Suggested Qty</span>

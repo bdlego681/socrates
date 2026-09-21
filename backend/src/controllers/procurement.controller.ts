@@ -17,6 +17,27 @@ const orderSchema = z.object({
   quantity: z.number().int().positive()
 });
 
+const productSchema = z.object({
+  name: z.string().min(1),
+  sku: z.string().min(1),
+  vendorUserId: z.string().uuid(),
+  unitCost: z.number().positive(),
+  leadTimeDays: z.number().int().positive()
+});
+
+export async function addProduct(req: Request, res: Response) {
+  const parsed = productSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'Invalid product data' });
+
+  try {
+    await db.addProduct(parsed.data.name, parsed.data.sku, parsed.data.vendorUserId, parsed.data.unitCost, parsed.data.leadTimeDays);
+    return res.status(201).json({ message: 'Product created' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Failed to create product' });
+  }
+}
+
 export async function approveOrder(req: Request, res: Response) {
   const parsed = orderSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: 'Invalid order data' });
@@ -83,7 +104,8 @@ export async function markOrderReceived(req: Request, res: Response) {
 
 export async function getAnalytics(req: Request, res: Response) {
   try {
-    const data = await db.getAnalytics();
+    const months = parseInt(req.query.months as string) || 6;
+    const data = await db.getAnalytics(months);
     return res.json(data);
   } catch (err) {
     console.error(err);

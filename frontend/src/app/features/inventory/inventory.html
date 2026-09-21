@@ -1,0 +1,169 @@
+@if (loading()) {
+  <app-loading-spinner message="Loading inventory..." [fullPage]="true"></app-loading-spinner>
+} @else if (error()) {
+  <app-error-alert [message]="error()!"></app-error-alert>
+} @else {
+  <div class="inventory-container">
+    
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Inventory Management</h2>
+        <p class="text-secondary">Track real-time stock levels and velocity across your entire catalog.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="exportCSV()">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">download</span> Export
+        </button>
+        <button class="btn btn-primary" (click)="showAddModal.set(true)">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">add</span> Add Product
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Total SKUs</div>
+        <div class="metric-value">{{ totalSkus() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Low Stock Items</div>
+        <div class="metric-value" style="color: var(--color-error);">{{ lowStockItems() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Total Units in Network</div>
+        <div class="metric-value">{{ totalStock() }}</div>
+      </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="table-card">
+      
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="toolbar-search">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" placeholder="Search by SKU or Product Name..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)">
+        </div>
+        <div class="toolbar-actions">
+          <div style="position: relative;">
+            <button class="btn btn-secondary" (click)="toggleVendorFilter($event)">
+              <span class="material-symbols-outlined" style="margin-right: var(--space-2);">filter_list</span> 
+              {{ vendorFilter() === 'all' ? 'All Vendors' : vendorFilter() }}
+              <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+            </button>
+            @if (showVendorFilter()) {
+              <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                <button class="dropdown-item" (click)="onVendorFilterChange('all')">All Vendors</button>
+                @for (v of uniqueVendors; track v) {
+                  <button class="dropdown-item" (click)="onVendorFilterChange(v)">{{ v }}</button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Product</th>
+            <th>Vendor</th>
+            <th>Health</th>
+            <th>Stock</th>
+            <th>Velocity</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of paginatedInventory(); track item.ProductID) {
+            <tr>
+              <td style="font-family: var(--font-mono);">{{ item.SKU }}</td>
+              <td style="font-weight: 500; color: var(--brand-primary);">{{ item.Name }}</td>
+              <td class="text-secondary">{{ item.VendorName || 'Unknown' }}</td>
+              <td>
+                <div class="health-bar-container">
+                  <div class="health-bar" 
+                       [style.width.%]="getHealthPercent(item)"
+                       [style.background-color]="getHealthColor(item)">
+                  </div>
+                </div>
+                <div class="text-secondary" style="font-size: var(--text-xs); margin-top: var(--space-1); font-weight: 500;">
+                  {{ item.DaysOfInventory | number:'1.0-0' }} days remaining
+                </div>
+              </td>
+              <td [style.color]="item.CurrentStock === 0 ? 'var(--color-error)' : 'inherit'" style="font-weight: 500;">
+                {{ item.CurrentStock }}
+              </td>
+              <td class="text-secondary" style="font-size: var(--text-sm);">{{ item.AverageDailySales | number:'1.1-1' }} / day</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      
+      @if (filteredInventory().length === 0) {
+        <div class="empty-state">
+          <span class="material-symbols-outlined empty-icon">inventory_2</span>
+          <p class="text-secondary">No products found matching your search.</p>
+        </div>
+      } @else {
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border);">
+          <div class="text-secondary" style="font-size: var(--text-sm);">
+            Showing {{ startRecord() }} to {{ endRecord() }} of {{ filteredInventory().length }} results
+          </div>
+          <div style="display: flex; gap: var(--space-2);">
+            <button class="btn btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">Previous</button>
+            <button class="btn btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  @if (showAddModal()) {
+    <div class="modal-overlay" (click)="showAddModal.set(false)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Add New Product</h3>
+          <button class="modal-close" (click)="showAddModal.set(false)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" [(ngModel)]="newProduct.name" placeholder="e.g. MacBook Pro M3">
+          </div>
+          <div class="form-group">
+            <label>SKU</label>
+            <input type="text" [(ngModel)]="newProduct.sku" placeholder="e.g. MAC-PRO-M3">
+          </div>
+          <div class="form-group">
+            <label>Vendor</label>
+            <select [(ngModel)]="newProduct.vendorUserId">
+              @for (v of vendors(); track v.UserID) {
+                <option [value]="v.UserID">{{ v.username || v.Email }}</option>
+              }
+            </select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+            <div class="form-group">
+              <label>Unit Cost ($)</label>
+              <input type="number" [(ngModel)]="newProduct.unitCost" min="0">
+            </div>
+            <div class="form-group">
+              <label>Lead Time (Days)</label>
+              <input type="number" [(ngModel)]="newProduct.leadTimeDays" min="1">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="showAddModal.set(false)">Cancel</button>
+          <button class="btn btn-primary" (click)="submitProduct()" [disabled]="!newProduct.name || !newProduct.sku">Add Product</button>
+        </div>
+      </div>
+    </div>
+  }
+}

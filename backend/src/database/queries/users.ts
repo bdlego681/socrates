@@ -8,7 +8,9 @@ export async function getRoles(): Promise<any[]> {
 
 export async function getUsers(): Promise<any[]> {
   const result = await pool.request().query(`
-    SELECT u.id AS UserID, u.email AS Email, r.RoleName, u.AccountStatus, u.created_at AS CreatedAt
+    SELECT u.id AS UserID, u.username, u.email AS Email, r.RoleName, u.AccountStatus, u.created_at AS CreatedAt,
+           u.SupplierScore,
+           (SELECT COUNT(*) FROM dbo.PurchaseOrders po WHERE po.VendorUserID = u.id AND po.Status != 'Fulfilled') AS ActivePOs
     FROM dbo.users u
     JOIN dbo.Roles r ON u.RoleID = r.RoleID
     ORDER BY u.created_at DESC

@@ -1,0 +1,277 @@
+@if (loading()) {
+  <app-loading-spinner message="Loading orders..." [fullPage]="true"></app-loading-spinner>
+} @else if (error()) {
+  <app-error-alert [message]="error()!"></app-error-alert>
+} @else {
+  <div class="orders-container">
+    
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Purchase Orders Ledger</h2>
+        <p class="text-secondary">Track and receive incoming inventory from your suppliers.</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="exportCSV()">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">download</span> Export
+        </button>
+        <button class="btn btn-primary" (click)="showCreateModal.set(true)">
+          <span class="material-symbols-outlined" style="margin-right: var(--space-2);">add_shopping_cart</span> Create PO
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Metrics -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Total Active POs</div>
+        <div class="metric-value">{{ totalPOs() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Pending Fulfillment</div>
+        <div class="metric-value" style="color: var(--color-warning);">{{ pendingFulfillment() }}</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Avg Fulfillment Time</div>
+        <div class="metric-value">{{ avgFulfillmentTime() }} <span style="font-size: var(--text-md); color: var(--text-muted);">Days</span></div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <div class="toolbar-search">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" placeholder="Search by PO ID, Product, or Supplier..." [ngModel]="searchQuery()" (ngModelChange)="onSearchChange($event)">
+        </div>
+        <div class="toolbar-actions">
+          <div style="position: relative;">
+            <button class="btn btn-secondary" (click)="toggleStatusFilter($event)">
+              <span class="material-symbols-outlined" style="margin-right: var(--space-2);">filter_list</span> 
+              {{ statusFilter() === 'all' ? 'All Status' : statusFilter() }}
+              <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+            </button>
+            @if (showStatusFilter()) {
+              <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                <button class="dropdown-item" (click)="onStatusFilterChange('all')">All Status</button>
+                <button class="dropdown-item" (click)="onStatusFilterChange('Sent to Vendor')">Sent to Vendor</button>
+                <button class="dropdown-item" (click)="onStatusFilterChange('Acknowledged')">Acknowledged</button>
+                <button class="dropdown-item" (click)="onStatusFilterChange('Fulfilled')">Fulfilled</button>
+              </div>
+            }
+          </div>
+          <div style="position: relative;">
+            <button class="btn btn-secondary" (click)="toggleSortMenu($event)">
+              <span class="material-symbols-outlined" style="margin-right: var(--space-2);">sort</span> 
+              Sort
+              <span class="material-symbols-outlined" style="margin-left: var(--space-2);">arrow_drop_down</span>
+            </button>
+            @if (showSortMenu()) {
+              <div class="dropdown-menu" (click)="$event.stopPropagation()" >
+                <button class="dropdown-item" (click)="onSortChange('newest')">Newest First</button>
+                <button class="dropdown-item" (click)="onSortChange('oldest')">Oldest First</button>
+                <button class="dropdown-item" (click)="onSortChange('qty')">Quantity (High→Low)</button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Created</th>
+            <th>Product</th>
+            <th>Supplier</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of paginatedOrders(); track order.PO_ID) {
+            <tr>
+              <td class="text-secondary">{{ order.CreatedAt | appDate:'shortDate' }}</td>
+              <td>
+                <div style="font-weight: 500; color: var(--brand-primary);">{{ order.ProductName }}</div>
+                <div class="text-secondary" style="font-size: var(--text-xs); margin-top: var(--space-1); font-family: var(--font-mono);">SKU: {{ order.SKU }}</div>
+              </td>
+              <td class="text-secondary">{{ order.VendorName || 'Unknown' }}</td>
+              <td style="font-family: var(--font-mono); font-weight: 500;">{{ order.Quantity }} units</td>
+              <td>
+                <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                  <span class="status-dot" 
+                        [class.status-dot--warning]="order.Status === 'Sent to Vendor'" 
+                        [class.status-dot--success]="order.Status === 'Fulfilled'"
+                        [class.status-dot--error]="order.Status === 'Cancelled'"
+                        [class.status-dot--success]="order.Status === 'Acknowledged'"
+                        >
+                  </span>
+                  <!-- Note: Using success for Acknowledged too since there is no info color -->
+                  {{ order.Status }}
+                </span>
+              </td>
+              <td style="text-align: right;">
+                @if (order.Status === 'Acknowledged') {
+                  <button class="btn btn-primary" (click)="selectedOrder.set(order)">
+                    Mark Received
+                  </button>
+                } @else if (order.Status === 'Fulfilled') {
+                  <span class="text-secondary" style="font-size: var(--text-sm);">Closed</span>
+                } @else {
+                  <button class="btn btn-secondary" (click)="viewOrder.set(order)">
+                    View
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      @if (filteredOrders().length === 0) {
+        <div class="empty-state">
+          <span class="material-symbols-outlined empty-icon">receipt_long</span>
+          <p class="text-secondary">No purchase orders found.</p>
+        </div>
+      } @else {
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-top: 1px solid var(--border);">
+          <div class="text-secondary" style="font-size: var(--text-sm);">
+            Showing {{ startRecord() }} to {{ endRecord() }} of {{ filteredOrders().length }} results
+          </div>
+          <div style="display: flex; gap: var(--space-2);">
+            <button class="btn btn-secondary" [disabled]="currentPage() === 1" (click)="prevPage()">Previous</button>
+            <button class="btn btn-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  @if (viewOrder()) {
+    <div class="modal-overlay" (click)="viewOrder.set(null)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Purchase Order Details</h3>
+          <button class="modal-close" (click)="viewOrder.set(null)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="kv-list" style="width: 100%;">
+            <div class="kv-item">
+              <span class="kv-label">PO ID</span>
+              <span class="kv-value" style="font-family: var(--font-mono); font-size: var(--text-xs);">{{ viewOrder()!.PO_ID }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Product</span>
+              <span class="kv-value">{{ viewOrder()!.ProductName }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">SKU</span>
+              <span class="kv-value" style="font-family: var(--font-mono);">{{ viewOrder()!.SKU }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Supplier</span>
+              <span class="kv-value">{{ viewOrder()!.VendorName || 'Unknown' }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Quantity</span>
+              <span class="kv-value" style="font-weight: 600;">{{ viewOrder()!.Quantity }} units</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Status</span>
+              <span class="kv-value">
+                <span style="display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 500; font-size: var(--text-sm);">
+                  <span class="status-dot" 
+                        [class.status-dot--warning]="viewOrder()!.Status === 'Sent to Vendor'" 
+                        [class.status-dot--success]="viewOrder()!.Status === 'Fulfilled'"
+                        [class.status-dot--success]="viewOrder()!.Status === 'Acknowledged'"
+                        >
+                  </span>
+                  {{ viewOrder()!.Status }}
+                </span>
+              </span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Created</span>
+              <span class="kv-value">{{ viewOrder()!.CreatedAt | appDate:'medium' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="viewOrder.set(null)">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showCreateModal()) {
+    <div class="modal-overlay" (click)="showCreateModal.set(false)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Create Purchase Order</h3>
+          <button class="modal-close" (click)="showCreateModal.set(false)">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Select Product</label>
+            <select [(ngModel)]="newPO.productId">
+              @for (p of products(); track p.ProductID) {
+                <option [value]="p.ProductID">{{ p.Name }} ({{ p.SKU }}) - Vendor: {{ p.VendorName || 'Unknown' }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Order Quantity</label>
+            <input type="number" [(ngModel)]="newPO.quantity" min="1">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="showCreateModal.set(false)">Cancel</button>
+          <button class="btn btn-primary" (click)="submitPO()" [disabled]="!newPO.productId || newPO.quantity <= 0">Submit PO</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (selectedOrder()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3 class="modal-title">Receive Inventory</h3>
+          <button class="modal-close" (click)="closeModal()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary" style="margin-bottom: var(--space-4);">
+            Confirm that you have received the exact amount ordered. This action will restock the database and cannot be undone.
+          </p>
+          <div class="kv-list" style="width: 100%;">
+            <div class="kv-item">
+              <span class="kv-label">SKU</span>
+              <span class="kv-value" style="font-family: var(--font-mono);">{{ selectedOrder()?.SKU }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Product</span>
+              <span class="kv-value">{{ selectedOrder()?.ProductName }}</span>
+            </div>
+            <div class="kv-item">
+              <span class="kv-label">Expected Qty</span>
+              <span class="kv-value" style="color: var(--brand-secondary); font-weight: bold;">{{ selectedOrder()?.Quantity }} units</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button class="btn btn-teal" (click)="confirmReceive(selectedOrder()!.PO_ID)">Confirm & Restock</button>
+        </div>
+      </div>
+    </div>
+  }
+}
+
