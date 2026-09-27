@@ -1,10 +1,11 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
-import { changePassword, disableMfa, enableMfa, login, logout, logoutOtherSessions, me, mfaStatus, regenerateCodes, setupMfa, verifyMfa, verifyRecovery } from '../controllers/auth.controller.js';
+import { checkUser, resetPassword, changePassword, disableMfa, enableMfa, login, logout, logoutOtherSessions, me, mfaStatus, regenerateCodes, setupMfa, verifyMfa, verifyRecovery } from '../controllers/auth.controller.js';
 import { requireAuth, requireMfaPending } from '../middleware/auth.middleware.js';
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many attempts. Please try again later.' } });
 const mfaLimiter=rateLimit({windowMs:15*60*1000,limit:10,standardHeaders:true,legacyHeaders:false,message:{error:'Too many attempts. Please try again later.'}});
 router.post('/login', loginLimiter, login); router.post('/logout', logout); router.get('/me', requireAuth, me); router.get('/mfa/status',mfaStatus);
 router.post('/mfa/verify',mfaLimiter,requireMfaPending,verifyMfa); router.post('/mfa/recovery',mfaLimiter,requireMfaPending,verifyRecovery); router.post('/mfa/setup',requireAuth,setupMfa); router.post('/mfa/enable',mfaLimiter,requireAuth,enableMfa); router.post('/mfa/disable',mfaLimiter,requireAuth,disableMfa); router.post('/mfa/recovery-codes/regenerate',mfaLimiter,requireAuth,regenerateCodes); router.post('/password/change',requireAuth,changePassword); router.post('/sessions/logout-others',requireAuth,logoutOtherSessions);
-export default router;
+router.post('/check-user', checkUser); router.post('/reset-password', resetPassword); export default router;
+

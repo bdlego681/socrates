@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router'; 
+﻿import { Routes } from '@angular/router'; 
 import { authGuard, guestGuard, mfaGuard } from './core/auth.guard';
 import { adminGuard } from './core/admin.guard';
 
@@ -10,13 +10,23 @@ export const routes: Routes = [
      { path: '', loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent) },
      { path: 'pricing', loadComponent: () => import('./pages/pricing/pricing.component').then(m => m.PricingComponent) },
      { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+     { path: 'blog', loadComponent: () => import('./pages/blog/blog.component').then(m => m.BlogComponent) },
      { path: 'privacy-policy', loadComponent: () => import('./pages/privacy/privacy.component').then(m => m.PrivacyComponent) },
      { path: 'careers', loadComponent: () => import('./pages/careers/careers.component').then(m => m.CareersComponent) },
      { path: 'terms', loadComponent: () => import('./pages/terms/terms.component').then(m => m.TermsComponent) },
-     { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) }
+     { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) },
+     { path: 'integrations', loadComponent: () => import('./pages/integrations/integrations.component').then(m => m.IntegrationsComponent) },
+     { path: 'features', loadComponent: () => import('./pages/features-page/features.component').then(m => m.FeaturesComponent) },
+     { path: 'security', loadComponent: () => import('./pages/security/security.component').then(m => m.SecurityComponent) },
+     { path: 'enterprise', loadComponent: () => import('./pages/enterprise/enterprise.component').then(m => m.EnterpriseComponent) },
+     { path: 'status', loadComponent: () => import('./pages/status/status.component').then(m => m.StatusComponent) },
+     { path: 'docs', loadComponent: () => import('./pages/api-docs/api-docs.component').then(m => m.ApiDocsComponent) },
+     { path: 'demo', loadComponent: () => import('./pages/demo/demo.component').then(m => m.DemoComponent) }
    ]
  },
- { path: 'login', canActivate: [guestGuard], loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
+ { path: 'payment', loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent) },
+ { path: 'reset-password', canActivate: [guestGuard], loadComponent: () => import('./pages/reset-password/reset-password.component').then(m => m.ResetPasswordComponent) },
+  { path: 'login', canActivate: [guestGuard], loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
  { path: 'login/mfa', canActivate: [mfaGuard], loadComponent: () => import('./pages/mfa/mfa.component').then(m => m.MfaComponent) },
  { path: 'setup', loadComponent: () => import('./pages/setup/setup.component').then(m => m.SetupComponent) },
  { path: 'app', canActivate: [authGuard], loadComponent: () => import('./layout/app-shell.component').then(m => m.AppShellComponent), children: [
@@ -31,3 +41,12 @@ export const routes: Routes = [
  ] }, 
  { path: '**', redirectTo: '' }
 ];
+
+
+
+
+
+
+
+
+

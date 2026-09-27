@@ -1,13 +1,13 @@
-
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { PublicHeaderComponent } from "../public-header/public-header.component";
 import { PublicFooterComponent } from "../public-footer/public-footer.component";
+import { LiveChatComponent } from "../../shared/components/live-chat/live-chat.component";
 
 @Component({
   selector: "app-public-layout",
   standalone: true,
-  imports: [RouterOutlet, PublicHeaderComponent, PublicFooterComponent],
+  imports: [RouterOutlet, PublicHeaderComponent, PublicFooterComponent, LiveChatComponent],
   template: `
     <div class="landing-page">
       <!-- Ambient Global Glows -->
@@ -22,10 +22,12 @@ import { PublicFooterComponent } from "../public-footer/public-footer.component"
         </main>
         
         <app-public-footer></app-public-footer>
+
+        <!-- Global Live Chat Widget -->
+        <app-live-chat></app-live-chat>
       </div>
     </div>
   `,
   styleUrls: ["../../pages/landing/landing.scss"]
 })
 export class PublicLayoutComponent {}
-

@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+﻿import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 
 @Component({
   standalone: true,
@@ -9,5 +8,9 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['../landing/landing.scss']
 })
 export class PricingComponent {
-  
+  isYearly = signal(false);
+
+  toggleYearly() {
+    this.isYearly.set(!this.isYearly());
+  }
 }

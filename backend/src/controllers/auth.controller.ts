@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt'; import { Request, Response } from 'express'; import { z } from 'zod';
+﻿import bcrypt from 'bcrypt'; import { Request, Response } from 'express'; import { z } from 'zod';
 import { env } from '../config/env.js'; import { pool, sql } from '../database/pool.js'; import { createSession, getSessionUser, invalidateOtherSessions, invalidateSession, promotePendingSession } from '../services/session.service.js'; import { consumeRecoveryCode, createSetup, generateRecoveryCodes, readEnrollment, saveEnrollment, validTotp } from '../services/mfa.service.js'; import { decrypt, encrypt } from '../services/crypto.service.js';
 import { ActivityService } from '../services/activity.service.js';
 const credentials=z.object({identifier:z.string().trim().min(1).max(254),password:z.string().min(1).max(256)}), code=z.object({code:z.string().trim().min(6).max(32)}), passwordMfa=z.object({password:z.string().min(1).max(256),code:z.string().trim().min(6).max(32)}), passwordChange=z.object({currentPassword:z.string().min(1),newPassword:z.string().min(12).max(256),confirmPassword:z.string().min(1)}).refine(v=>v.newPassword===v.confirmPassword);
@@ -57,3 +57,24 @@ export async function disableMfa(req:Request,res:Response){if(!await confirm(req
 export async function regenerateCodes(req:Request,res:Response){if(!await confirm(req))return res.status(401).json({error:'Unable to regenerate codes'}); await ActivityService.logActivity(req.user!.id, 'mfa_recovery_codes_regenerated'); return res.json({recoveryCodes:await generateRecoveryCodes(req.user!.id)});}
 export async function changePassword(req:Request,res:Response){const i=passwordChange.safeParse(req.body);if(!i.success)return res.status(400).json({error:'Password requirements were not met'});const r=await pool.request().input('id',sql.UniqueIdentifier,req.user!.id).query<{password_hash:string}>('SELECT password_hash FROM dbo.users WHERE id=@id');if(!r.recordset[0]||!(await bcrypt.compare(i.data.currentPassword,r.recordset[0].password_hash)))return res.status(401).json({error:'Unable to change password'});const h=await bcrypt.hash(i.data.newPassword,12);await pool.request().input('id',sql.UniqueIdentifier,req.user!.id).input('h',sql.NVarChar(255),h).query('UPDATE dbo.users SET password_hash=@h,password_changed_at=SYSUTCDATETIME() WHERE id=@id');const t=token(req);if(t)await invalidateOtherSessions(req.user!.id,t); await ActivityService.logActivity(req.user!.id, 'password_changed'); return res.status(204).send();}
 export async function logoutOtherSessions(req:Request,res:Response){const t=token(req);if(t)await invalidateOtherSessions(req.user!.id,t); await ActivityService.logActivity(req.user!.id, 'other_sessions_logged_out'); return res.status(204).send();}
+
+export async function checkUser(req: Request, res: Response) {
+  const i = credentials.pick({ identifier: true }).safeParse(req.body);
+  if (!i.success) return res.status(400).json({ error: 'Invalid identifier' });
+  const r = await pool.request().input('identifier', sql.NVarChar(254), i.data.identifier).query('SELECT id FROM dbo.users WHERE username=@identifier OR email=@identifier');
+  if (!r.recordset[0]) return res.status(404).json({ error: 'User not found' });
+  return res.json({ success: true });
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  const schema = z.object({ identifier: z.string().trim().min(1), newPassword: z.string().min(1) });
+  const i = schema.safeParse(req.body);
+  if (!i.success) return res.status(400).json({ error: 'Invalid payload' });
+  
+  const r = await pool.request().input('identifier', sql.NVarChar(254), i.data.identifier).query('SELECT id FROM dbo.users WHERE username=@identifier OR email=@identifier');
+  if (!r.recordset[0]) return res.status(404).json({ error: 'User not found' });
+
+  const hash = await bcrypt.hash(i.data.newPassword, 10);
+  await pool.request().input('id', sql.UniqueIdentifier, r.recordset[0].id).input('hash', sql.NVarChar(255), hash).query('UPDATE dbo.users SET password_hash=@hash WHERE id=@id');
+  return res.json({ success: true });
+}

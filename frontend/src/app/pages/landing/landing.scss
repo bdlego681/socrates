@@ -1,4 +1,4 @@
-.landing-page {
+﻿.landing-page {
   background-color: var(--bg-surface);
   min-height: 100vh;
   display: flex;
@@ -109,7 +109,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
 .btn-with-arrow {
@@ -594,12 +594,14 @@ hr.section-divider {
 
 /* External-facing Button Pill Override */
 .btn {
-  border-radius: 100px !important;
+  
   padding: 0 24px;
 }
 .btn-lg {
   padding: 0 32px;
 }
+
+
 
 
 

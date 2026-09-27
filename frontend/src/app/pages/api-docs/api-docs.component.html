@@ -1,0 +1,175 @@
+<div class="api-page" style="background: var(--bg-body); min-height: 100vh; overflow: hidden;">
+  
+  <!-- Hero -->
+  <section style="text-align: center; padding: 120px 24px 80px;">
+    <div class="container" style="max-width: 800px; margin: 0 auto;">
+      <div class="eyebrow" style="color: var(--brand-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-size: 14px; margin-bottom: 16px;">
+        Developers
+      </div>
+      <h1 style="font-size: 56px; line-height: 1.1; margin-bottom: 24px; color: var(--text-primary); font-weight: 800; letter-spacing: -0.02em;">
+        API Reference
+      </h1>
+      <p style="font-size: 20px; color: var(--text-secondary); margin-bottom: 0; line-height: 1.6;">
+        Programmatically access your supply chain data, trigger automated purchase orders, and sync analytics directly into your internal tooling.
+      </p>
+    </div>
+  </section>
+
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+
+    <!-- Endpoint 1: Inventory -->
+    <div class="feature-block">
+      <div class="feature-text">
+        <div class="endpoint-badge">
+          <span class="method get">GET</span>
+          <code class="url">/v1/inventory</code>
+        </div>
+        <h2>List all SKUs</h2>
+        <p>Returns a paginated list of your inventory items, including real-time stock levels and velocity metrics.</p>
+        
+        <h4 class="table-heading">Query Parameters</h4>
+        <table class="api-table">
+          <tbody>
+            <tr>
+              <td><code>limit</code><br><span class="type">integer</span></td>
+              <td>Limit the number of objects returned (1-100). Default is 50.</td>
+            </tr>
+            <tr>
+              <td><code>status</code><br><span class="type">string</span></td>
+              <td>Filter by stock status: <code>in_stock</code>, <code>low_stock</code>, <code>out_of_stock</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="feature-ui-mock">
+        <div class="ui-window">
+          <div class="ui-header">
+            <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            <div class="title">terminal - bash</div>
+          </div>
+          <div class="ui-body code-body">
+            <div class="code-comment"># cURL Request</div>
+            <pre ngNonBindable><code>curl -X GET https://api.socrates.local/v1/inventory?limit=2 \
+  -H "Authorization: Bearer sk_live_..."</code></pre>
+            
+            <div class="code-comment" style="margin-top: 24px;">// JSON Response</div>
+            <pre ngNonBindable><code>&#123;
+  "object": "list",
+  "data": [
+    &#123;
+      "id": "sku_99381",
+      "name": "Wireless Earbuds",
+      "stock_level": 14,
+      "status": "low_stock"
+    &#125;
+  ]
+&#125;</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid var(--border); margin: 80px 0;">
+
+    <!-- Endpoint 2: Create PO -->
+    <div class="feature-block reverse">
+      <div class="feature-ui-mock">
+        <div class="ui-window">
+          <div class="ui-header">
+            <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            <div class="title">editor - index.js</div>
+          </div>
+          <div class="ui-body code-body">
+            <div class="code-comment">// Node.js Request</div>
+            <pre ngNonBindable><code>const axios = require('axios');
+
+await axios.post('https://api.socrates.local/v1/purchase-orders', &#123;
+  vendor_id: 'ven_48293',
+  auto_send: false,
+  line_items: [
+    &#123; sku_id: 'sku_99381', quantity: 250 &#125;
+  ]
+&#125;, &#123;
+  headers: &#123; 'Authorization': 'Bearer sk_live_...' &#125;
+&#125;);</code></pre>
+
+            <div class="code-comment" style="margin-top: 24px;">// JSON Response</div>
+            <pre ngNonBindable><code>&#123;
+  "id": "po_8847291",
+  "object": "purchase_order",
+  "status": "draft",
+  "vendor_id": "ven_48293",
+  "total_amount": 4250.00
+&#125;</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="feature-text">
+        <div class="endpoint-badge">
+          <span class="method post">POST</span>
+          <code class="url">/v1/purchase-orders</code>
+        </div>
+        <h2>Create a Purchase Order</h2>
+        <p>Programmatically draft a new Purchase Order. If <code>auto_send</code> is true, it will bypass manual approval and dispatch immediately to the vendor.</p>
+
+        <h4 class="table-heading">Body Parameters</h4>
+        <table class="api-table">
+          <tbody>
+            <tr>
+              <td><code>vendor_id</code><br><span class="type required">required</span></td>
+              <td>The ID of the vendor to issue the PO to.</td>
+            </tr>
+            <tr>
+              <td><code>line_items</code><br><span class="type required">required</span></td>
+              <td>Array containing <code>sku_id</code> and <code>quantity</code>.</td>
+            </tr>
+            <tr>
+              <td><code>auto_send</code><br><span class="type">boolean</span></td>
+              <td>Default <code>false</code>. Set to true to bypass human approval.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid var(--border); margin: 80px 0;">
+
+    <!-- Endpoint 3: Vendor Risk -->
+    <div class="feature-block">
+      <div class="feature-text">
+        <div class="endpoint-badge">
+          <span class="method get">GET</span>
+          <code class="url">/v1/vendors/&#123;id&#125;/risk</code>
+        </div>
+        <h2>Get Vendor Risk Profile</h2>
+        <p>Retrieves the live Socrates AI risk analysis for a specific vendor, including lead time deviations and reliability scoring.</p>
+      </div>
+      <div class="feature-ui-mock">
+        <div class="ui-window">
+          <div class="ui-header">
+            <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            <div class="title">terminal - bash</div>
+          </div>
+          <div class="ui-body code-body">
+            <div class="code-comment"># cURL Request</div>
+            <pre ngNonBindable><code>curl -X GET https://api.socrates.local/v1/vendors/ven_48293/risk \
+  -H "Authorization: Bearer sk_live_..."</code></pre>
+
+            <div class="code-comment" style="margin-top: 24px;">// JSON Response</div>
+            <pre ngNonBindable><code>&#123;
+  "vendor_id": "ven_48293",
+  "risk_tier": "high",
+  "reliability_score": 86,
+  "lead_time_deviation_days": 4.2,
+  "recommendation": "route_to_fallback"
+&#125;</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Padding -->
+    <div style="height: 120px;"></div>
+
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<main class="auth-page">
+﻿<main class="auth-page">
   <div class="global-accent-glow"></div>
   <div class="global-accent-glow-2"></div>
   <div class="auth-card">
@@ -14,16 +14,45 @@
       </p>
       <div class="form-group">
         <label for="mfa-code">{{ recovery() ? 'Recovery code' : 'Authenticator code' }}</label>
-        <input id="mfa-code" type="text" [formControl]="code" [attr.inputmode]="recovery() ? 'text' : 'numeric'" maxlength="32" autocomplete="one-time-code" [placeholder]="recovery() ? 'XXXXXXXX-XXXXXXXX' : '000000'" autofocus>
+        
+        @if (!recovery()) {
+          <div class="mfa-digit-group" style="display: flex; gap: 8px; justify-content: space-between; margin-top: 8px; margin-bottom: 24px;">
+            @for (digit of digits; track $index) {
+              <input 
+                #digitInput
+                type="text" 
+                inputmode="numeric"
+                placeholder="0"
+                maxlength="1" 
+                autocomplete="one-time-code"
+                [value]="digits[$index]"
+                (input)="onDigitInput($event, $index)"
+                (keydown)="onDigitKeydown($event, $index)"
+                (paste)="onPaste($event)"
+                (focus)="onFocus($event)"
+                style="width: 48px; height: 56px; text-align: center; font-size: 24px; font-weight: 600; border-radius: 8px; border: 1px solid var(--border-strong); transition: border-color 0.2s, box-shadow 0.2s;"
+              >
+            }
+          </div>
+        } @else {
+          <input id="mfa-code" type="text" [formControl]="code" inputmode="text" maxlength="32" autocomplete="one-time-code" placeholder="XXXXXXXX-XXXXXXXX" autofocus style="margin-top: 8px; margin-bottom: 24px;">
+        }
       </div>
       @if (error()) {
         <div class="form-error">{{ error() }}</div>
       }
-      <button type="button" class="btn btn-block btn-lg" (click)="submit()" [disabled]="code.invalid || loading()">
-        {{ loading() ? 'Verifying…' : 'Verify' }}
+      <button type="button" class="btn btn-block btn-highlight btn-lg" (click)="submit()" [disabled]="(code.invalid && recovery()) || (!recovery() && code.value.length !== 6) || loading()" style="display: flex; justify-content: center; align-items: center;">
+        @if (loading()) {
+          <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin: 0 auto;">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.25"></circle>
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+          </svg>
+        } @else {
+          Verify
+        }
       </button>
       <hr class="divider">
-      <button type="button" class="btn btn-secondary btn-block" (click)="recovery.set(!recovery())">
+      <button type="button" class="btn btn-secondary btn-block" (click)="toggleRecovery()">
         {{ recovery() ? 'Use authenticator code instead' : 'Use a recovery code instead' }}
       </button>
     </div>

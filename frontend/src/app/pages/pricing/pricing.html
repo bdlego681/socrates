@@ -1,10 +1,8 @@
-<!-- Hero Section -->
+﻿<!-- Hero Section -->
   <section class="pricing-hero" style="padding: 80px 0 60px; text-align: center;">
     <div class="container">
       <h1 style="font-size: 48px; color: var(--brand-primary); margin-bottom: 24px; font-weight: 700;">Simple, Transparent Pricing</h1>
-      <p style="font-size: 20px; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.6;">
-        Choose the plan that best fits your supply chain volume and team size. No hidden fees, no surprises.
-      </p>
+      <p style="font-size: 20px; color: var(--text-secondary); max-width: 800px; margin: 0 auto; line-height: 1.6;">Choose the plan that best fits your supply chain volume and team size. No hidden fees, no surprises.</p>
     </div>
   </section>
 
@@ -13,6 +11,17 @@
   <!-- Pricing Cards -->
   <section class="pricing-cards" style="padding: 80px 0;">
     <div class="container">
+      <div style="max-width: 1200px; margin: 0 auto 32px; display: flex; justify-content: flex-end; padding: 0 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span [style.color]="!isYearly() ? 'var(--brand-primary)' : 'var(--text-secondary)'" style="font-weight: 600; font-size: 13px; transition: color 0.2s;">Monthly</span>
+          <button type="button" (click)="toggleYearly()" style="width: 36px; height: 20px; border-radius: 10px; background: var(--brand-secondary); border: none; position: relative; cursor: pointer; transition: background 0.2s;">
+            <div style="width: 14px; height: 14px; background: white; border-radius: 50%; position: absolute; top: 3px; transition: left 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.1);" [style.left]="isYearly() ? '19px' : '3px'"></div>
+          </button>
+          <span [style.color]="isYearly() ? 'var(--brand-primary)' : 'var(--text-secondary)'" style="font-weight: 600; font-size: 13px; transition: color 0.2s; display: flex; align-items: center;">
+            Yearly <span style="background: rgba(58, 185, 176, 0.15); color: var(--brand-secondary); font-size: 10px; padding: 2px 6px; border-radius: 100px; margin-left: 6px; font-weight: 700;">Save 20%</span>
+          </span>
+        </div>
+      </div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
         
         <!-- Starter Plan -->
@@ -20,24 +29,24 @@
           <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Starter</h3>
           <p style="color: var(--text-secondary); margin-bottom: 24px;">For small businesses and boutiques.</p>
           <div style="margin-bottom: 32px;">
-            <span style="font-size: 48px; font-weight: 700; color: var(--brand-primary);">$499</span>
+            <span style="font-size: 48px; font-weight: 700; color: var(--brand-primary);">{{ isYearly() ? '$399' : '$499' }}</span>
             <span style="color: var(--text-secondary);">/month</span>
           </div>
           <ul style="list-style: none; padding: 0; margin: 0 0 40px; flex: 1;">
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Up to 2 team members
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Up to 2 seats
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> 2,500 SKUs managed
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> 2,500 SKUs managed
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Basic PO generation
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Basic PO generation
             </li>
             <li style="display: flex; align-items: center; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Standard email support
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Standard email support
             </li>
           </ul>
-          <a routerLink="/contact" class="btn" style="background: white; border: 2px solid var(--brand-primary); color: var(--brand-primary); padding: 12px; text-align: center; border-radius: 6px; font-weight: 600; text-decoration: none; display: block;">Start Free Trial</a>
+          <a routerLink="/payment" [queryParams]="{plan: 'starter', interval: isYearly() ? 'yearly' : 'monthly'}" class="btn" style="background: white; border: 2px solid var(--brand-primary); color: var(--brand-primary); padding: 12px; text-align: center;  font-weight: 600; text-decoration: none; display: block;">Start Free Trial</a>
         </div>
 
         <!-- Growth Plan -->
@@ -46,24 +55,24 @@
           <h3 style="font-size: 24px; color: var(--brand-primary); margin-bottom: 8px;">Growth</h3>
           <p style="color: var(--text-secondary); margin-bottom: 24px;">Perfect for scaling brands.</p>
           <div style="margin-bottom: 32px;">
-            <span style="font-size: 48px; font-weight: 700; color: var(--brand-primary);">$999</span>
+            <span style="font-size: 48px; font-weight: 700; color: var(--brand-primary);">{{ isYearly() ? '$799' : '$999' }}</span>
             <span style="color: var(--text-secondary);">/month</span>
           </div>
           <ul style="list-style: none; padding: 0; margin: 0 0 40px; flex: 1;">
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Up to 5 team members
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Up to 5 seats
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> 10,000 SKUs managed
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> 10,000 SKUs managed
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Automated PO generation
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Automated PO generation
             </li>
             <li style="display: flex; align-items: center; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Priority email support
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Priority email support
             </li>
           </ul>
-          <a routerLink="/contact" class="btn" style="background: var(--brand-primary); color: white; padding: 12px; text-align: center; border-radius: 6px; font-weight: 600; text-decoration: none; display: block;">Start Free Trial</a>
+          <a routerLink="/payment" [queryParams]="{plan: 'growth', interval: isYearly() ? 'yearly' : 'monthly'}" class="btn" style="background: var(--brand-primary); color: white; padding: 12px; text-align: center;  font-weight: 600; text-decoration: none; display: block;">Start Free Trial</a>
         </div>
 
         <!-- Enterprise Plan -->
@@ -75,19 +84,19 @@
           </div>
           <ul style="list-style: none; padding: 0; margin: 0 0 40px; flex: 1;">
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Unlimited team members
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Unlimited seats
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Unlimited SKUs managed
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Unlimited SKUs managed
             </li>
             <li style="display: flex; align-items: center; margin-bottom: 16px; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Advanced vendor risk analytics
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Advanced vendor risk analytics
             </li>
             <li style="display: flex; align-items: center; color: var(--text-primary);">
-              <span style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">✓</span> Dedicated account manager
+              <span class="material-symbols-outlined" style="color: var(--brand-secondary); margin-right: 12px; font-size: 20px;">check</span> Dedicated account manager
             </li>
           </ul>
-          <a routerLink="/contact" class="btn" style="background: white; border: 2px solid var(--brand-primary); color: var(--brand-primary); padding: 12px; text-align: center; border-radius: 6px; font-weight: 600; text-decoration: none; display: block;">Contact Sales</a>
+          <a routerLink="/contact" class="btn" style="background: white; border: 2px solid var(--brand-primary); color: var(--brand-primary); padding: 12px; text-align: center;  font-weight: 600; text-decoration: none; display: block;">Contact Sales</a>
         </div>
 
       </div>
@@ -120,7 +129,7 @@
               <td colspan="4" style="padding: 24px 24px 8px; font-weight: 700; color: var(--brand-primary); font-size: 18px; border-bottom: 1px solid var(--border); background: transparent;">Core Platform</td>
             </tr>
             <tr>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">Team Members</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">Seats</td>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-primary); font-weight: 500;">Up to 2</td>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-primary); font-weight: 500;">Up to 5</td>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-primary); font-weight: 500;">Unlimited</td>
@@ -133,9 +142,9 @@
             </tr>
             <tr>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">Automated PO Generation</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
             </tr>
             
             <!-- Integrations & Data -->
@@ -144,19 +153,19 @@
             </tr>
             <tr>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">Shopify / BigCommerce Sync</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
             </tr>
             <tr>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">ERP Connections (NetSuite, SAP)</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
             </tr>
             <tr>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">REST API Access</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-primary); font-weight: 500;">Rate Limited</td>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-primary); font-weight: 500;">Unlimited</td>
             </tr>
@@ -173,14 +182,22 @@
             </tr>
             <tr>
               <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); color: var(--text-secondary);">SSO & SAML</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
-              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;">✓</td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--text-muted);"><span class="material-symbols-outlined" style="font-size: 20px;">remove</span></td>
+              <td style="padding: 16px 24px; border-bottom: 1px solid var(--border); text-align: center; color: var(--brand-secondary); font-size: 20px;"><span class="material-symbols-outlined" style="font-size: 20px;">check</span></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </section>
+
+
+
+
+
+
+
+
 
 

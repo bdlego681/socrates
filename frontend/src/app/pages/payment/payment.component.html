@@ -1,0 +1,223 @@
+﻿<div class="landing-page" style="min-height: 100vh; font-family: var(--font-family); position: relative; padding-bottom: 32px; display: flex; align-items: center;">
+  <!-- Ambient Glows -->
+  <div class="global-accent-glow"></div>
+  <div class="global-accent-glow-2"></div>
+
+  <div class="container" style="max-width: 960px; margin: 0 auto; padding-top: 24px; position: relative; z-index: 10; width: 100%;">
+    
+    <!-- Header (Top Left Logo & Back Button) -->
+    <div style="margin-bottom: 32px;">
+      <a routerLink="/" style="display: inline-block;">
+        <img src="/assets/logo-new-withtext.jpg" alt="Socrates" style="height: 68px; object-fit: contain;">
+      </a>
+      <div style="margin-top: 4px;">
+        <a routerLink="/pricing" style="color: var(--text-secondary); text-decoration: none; font-weight: 500; font-size: 14px; display: inline-flex; align-items: center; gap: 4px; transition: color 0.2s;" onmouseover="this.style.color='var(--brand-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+          <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Back to pricing
+        </a>
+      </div>
+    </div>
+
+        @if (isSuccess()) {
+      <div class="auth-card" style="max-width: 500px; margin: 0 auto; padding: 48px; background: var(--bg-surface); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid var(--border); animation: fadeIn 0.4s ease-out;">
+        
+        <!-- Header -->
+        <div style="text-align: center; margin-bottom: 32px;">
+          <div style="width: 72px; height: 72px; background: rgba(58, 185, 176, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+            <span class="material-symbols-outlined" style="color: var(--brand-secondary); font-size: 36px;">check_circle</span>
+          </div>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--brand-primary); margin-bottom: 12px;">Trial Activated</h2>
+          <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin: 0;">Your workspace is ready. We've sent a confirmation email with your secure login details.</p>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid var(--border); margin: 32px 0;">
+
+        <!-- Team Invites -->
+        <div style="margin-bottom: 40px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: var(--brand-primary); margin: 0;">Invite your team</h3>
+            <span style="background: rgba(58, 185, 176, 0.1); color: var(--brand-secondary); padding: 4px 10px; border-radius: 100px; font-size: 12px; font-weight: 700;">
+              {{ seatsAvailable() }} {{ seatsAvailable() === 1 ? 'seat' : 'seats' }} left
+            </span>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+            <input #emailInput type="email" class="form-control" placeholder="colleague@company.com" style="flex: 1; padding: 10px 14px; font-size: 14px;" (keyup.enter)="sendInvite(emailInput)" [disabled]="seatsAvailable() === 0">
+            <button type="button" class="btn" style="white-space: nowrap; background: white; border: 1px solid var(--brand-primary); color: var(--brand-primary); font-weight: 600; font-size: 14px; padding: 0 16px; " (click)="sendInvite(emailInput)" [disabled]="seatsAvailable() === 0">Send Invite</button>
+          </div>
+
+          @if (invitedEmails().length > 0) {
+            <div style="background: var(--bg-body); border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+              <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+                @for (email of invitedEmails(); track email) {
+                  <li style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-primary);">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--brand-primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600;">
+                      {{ email.charAt(0).toUpperCase() }}
+                    </div>
+                    {{ email }} 
+                    <span style="color: var(--brand-secondary); font-size: 12px; font-weight: 600; margin-left: auto; display: flex; align-items: center; gap: 4px;">
+                      <span class="material-symbols-outlined" style="font-size: 14px;">check</span> Sent
+                    </span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+
+        <a routerLink="/login" class="btn btn-highlight btn-block btn-lg" style="text-align: center; display: block; font-size: 16px; padding: 14px;">Go to Dashboard &rarr;</a>
+      </div>
+    } @else {
+      <div style="display: flex; gap: 48px; align-items: flex-start; flex-wrap: wrap; justify-content: space-between;">
+        
+        <!-- Left Column: Form & Selector -->
+        <div style="flex: 1 1 480px; max-width: 540px;">
+          
+          <h2 style="font-size: 20px; font-weight: 700; color: var(--brand-primary); margin-bottom: 16px;">Choose your plan</h2>
+          
+          <!-- Plan Selector (Native styling) -->
+          <div style="border: 1px solid var(--border-strong); border-radius: 12px; overflow: hidden; margin-bottom: 28px; background: var(--bg-surface); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <!-- Yearly Option -->
+            <div (click)="setInterval('yearly')" [style.background]="isYearly() ? 'rgba(58, 185, 176, 0.05)' : 'white'" [style.border]="isYearly() ? '1px solid var(--brand-secondary)' : '1px solid transparent'" style="padding: 16px; border-bottom: 1px solid var(--border-strong); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; margin: -1px;">
+              <div>
+                <div style="font-weight: 600; color: var(--brand-primary); margin-bottom: 2px; font-size: 15px; display: flex; align-items: center; gap: 12px;">
+                  Yearly Membership 
+                  <span style="background: rgba(58, 185, 176, 0.15); color: var(--brand-secondary); padding: 2px 10px; border-radius: 100px; font-size: 11px; font-weight: 700;">Save 20%</span>
+                </div>
+                <div style="font-size: 13px; color: var(--text-secondary);">{{ yearlyPrice() }}/month (billed annually)</div>
+              </div>
+              <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid; display: flex; align-items: center; justify-content: center; background: white;" [style.borderColor]="isYearly() ? 'var(--brand-secondary)' : 'var(--border-strong)'">
+                @if (isYearly()) { <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--brand-secondary);"></div> }
+              </div>
+            </div>
+            
+            <!-- Monthly Option -->
+            <div (click)="setInterval('monthly')" [style.background]="!isYearly() ? 'rgba(58, 185, 176, 0.05)' : 'white'" [style.border]="!isYearly() ? '1px solid var(--brand-secondary)' : '1px solid transparent'" style="padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s; margin: -1px;">
+              <div>
+                <div style="font-weight: 600; color: var(--brand-primary); margin-bottom: 2px; font-size: 15px;">Monthly Membership</div>
+                <div style="font-size: 13px; color: var(--text-secondary);">{{ monthlyPrice() }}/month</div>
+              </div>
+              <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid; display: flex; align-items: center; justify-content: center; background: white;" [style.borderColor]="!isYearly() ? 'var(--brand-secondary)' : 'var(--border-strong)'">
+                @if (!isYearly()) { <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--brand-secondary);"></div> }
+              </div>
+            </div>
+          </div>
+
+          <h2 style="font-size: 20px; font-weight: 700; color: var(--brand-primary); margin-bottom: 16px;">Pay with</h2>
+          
+          <form class="auth-form" (submit)="processPayment($event)">
+            
+            <div class="form-group" style="margin-bottom: 14px;"><label style="margin-bottom: 6px; display: block; font-size: 13px; font-weight: 600;">Card number</label><div style="position: relative;"><input type="text" class="form-control" placeholder="1234 1234 1234 1234" maxlength="19" required style="padding: 10px 12px; font-size: 14px; width: 100%;" (input)="onCardInput($event)">@if (cardType()) { <img [src]="'/assets/card-types/' + cardType() + '.svg'" alt="Card Logo" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); height: 24px; width: auto; object-fit: contain;"> }</div></div>
+
+            <div style="display: flex; gap: 16px; margin-bottom: 14px;">
+              <div class="form-group" style="flex: 1; margin-bottom: 0;"><label style="margin-bottom: 6px; display: block; font-size: 13px; font-weight: 600;" [style.color]="expiryInvalid() ? '#e53e3e' : 'var(--brand-primary)'">Expiry</label><input type="text" class="form-control" placeholder="MM / YY" maxlength="7" required style="padding: 10px 12px; font-size: 14px; width: 100%; transition: border-color 0.2s;" [style.borderColor]="expiryInvalid() ? '#e53e3e' : ''" [style.color]="expiryInvalid() ? '#e53e3e' : ''" (input)="onExpiryInput($event)"></div>
+              <div class="form-group" style="flex: 1; margin-bottom: 0;"><label style="margin-bottom: 6px; display: block; font-size: 13px; font-weight: 600;">CVC</label><div style="position: relative;"><input type="text" class="form-control" [placeholder]="cvcMaxLength() === 4 ? '1234' : '123'" [attr.maxlength]="cvcMaxLength()" required style="padding: 10px 12px; font-size: 14px; width: 100%;" (input)="onCvcInput($event)"><img src="/assets/card-types/cvv.svg" alt="CVC" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); height: 20px; width: auto; object-fit: contain; opacity: 0.8; pointer-events: none;"></div></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label style="margin-bottom: 6px; display: block; font-size: 13px; font-weight: 600;">Country</label>
+              <select class="form-control" style="padding: 10px 12px; font-size: 14px;">
+                <option>United States</option>
+                <option>Canada</option>
+                <option>United Kingdom</option>
+                <option>Australia</option>
+              </select>
+            </div>
+
+            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin: 16px 0; padding-top: 16px; border-top: 1px solid var(--border);">
+              Cancel anytime in account settings at least one day before your trial ends. By clicking on Start 30-day free trial you agree to our 
+              <a routerLink="/terms" style="color: var(--brand-primary); font-weight: 600; text-decoration: underline;">Terms of Service</a> 
+              and authorize this recurring charge.
+            </p>
+
+            <button type="submit" class="btn btn-highlight btn-block" style="padding: 12px; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center;" [disabled]="isProcessing()">
+              @if (isProcessing()) {
+                <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin: 0 auto;">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.25"></circle>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+              } @else {
+                Start 30-day free trial
+              }
+            </button>
+            
+            <!-- Secure Lock -->
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px;">
+              <span class="material-symbols-outlined" style="font-size: 14px; color: var(--text-muted);">lock</span>
+              <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);">Payments are secure and encrypted</span>
+            </div>
+
+          </form>
+          
+        </div>
+
+        <!-- Right Column: Plan Details -->
+        <div style="flex: 1 1 340px; max-width: 400px;">
+          <h2 style="font-size: 20px; font-weight: 700; color: var(--brand-primary); margin-bottom: 16px;">Plan details</h2>
+          
+          <div class="auth-card" style="padding: 24px;">
+            
+            <!-- Plan Header -->
+            <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+              <div style="width: 40px; height: 40px; background: rgba(58, 185, 176, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="color: var(--brand-secondary); font-size: 20px;">inventory_2</span>
+              </div>
+              <div>
+                <div style="font-weight: 700; color: var(--brand-primary); font-size: 15px;">{{ planName() }}</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">{{ isYearly() ? 'Yearly' : 'Monthly' }} Subscription</div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">Trial ends {{ trialEndDateStr() }}</div>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <ul style="list-style: none; padding: 0; margin: 0 0 24px 0; display: flex; flex-direction: column; gap: 12px;">
+              @for (feature of planFeatures(); track feature) {
+                <li style="display: flex; gap: 12px; align-items: flex-start;">
+                  <span class="material-symbols-outlined" style="font-size: 16px; color: var(--brand-secondary);">check</span>
+                  <span style="color: var(--text-secondary); font-size: 13px; font-weight: 500; padding-top: 1px;">{{ feature }}</span>
+                </li>
+              }
+            </ul>
+
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 16px 0;">
+
+            <!-- Pricing Line Items -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <span style="color: var(--text-primary); font-size: 14px; font-weight: 500;">30-day Free Trial</span>
+              <span style="color: var(--brand-secondary); font-weight: 700; font-size: 14px;">$0.00</span>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div style="display: flex; flex-direction: column;">
+                <span style="color: var(--text-primary); font-size: 14px; font-weight: 500;">{{ planName() }}</span>
+                <span style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">Begins on {{ trialEndDateStr() }}</span>
+              </div>
+              <span style="color: var(--text-secondary); font-weight: 600; font-size: 14px;">{{ currentPrice() }}/mo</span>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 16px 0;">
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 700; color: var(--brand-primary); font-size: 15px;">Total Due Today (USD)</span>
+              <span style="font-size: 18px; font-weight: 700; color: var(--brand-primary);">$0.00</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+

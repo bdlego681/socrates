@@ -1,4 +1,4 @@
-<main class="auth-page">
+﻿<main class="auth-page">
   <div class="global-accent-glow"></div>
   <div class="global-accent-glow-2"></div>
   <div class="auth-card">
@@ -11,12 +11,15 @@
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="form-group">
           <label for="login-id">Email or username</label>
-          <input id="login-id" type="text" formControlName="identifier" autocomplete="username">
+          <input id="login-id" type="text" formControlName="identifier" autocomplete="username" placeholder="user@socrates.com">
         </div>
         <div class="form-group">
-          <label for="login-pw">Password</label>
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <label for="login-pw">Password</label>
+              <a routerLink="/reset-password" tabindex="-1" style="font-size: 13px; font-weight: 500; color: var(--brand-primary); text-decoration: none;">Forgot password?</a>
+            </div>
           <div class="password-wrap">
-            <input id="login-pw" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password">
+            <input id="login-pw" [type]="showPassword() ? 'text' : 'password'" formControlName="password" autocomplete="current-password" placeholder="**********">
             <button type="button" class="password-toggle" (click)="showPassword.set(!showPassword())" tabindex="-1">
               {{ showPassword() ? 'Hide' : 'Show' }}
             </button>
@@ -25,12 +28,23 @@
         @if (error()) {
           <div class="form-error" role="alert">{{ error() }}</div>
         }
-        <button type="submit" class="btn btn-block btn-lg" [disabled]="loading() || form.invalid">
-          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        <button type="submit" class="btn btn-block btn-lg" [disabled]="loading() || form.invalid" style="display: flex; justify-content: center; align-items: center;">
+          @if (loading()) {
+            <svg class="btn-spinner" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; margin: 0 auto;">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.25"></circle>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+            </svg>
+          } @else {
+            Sign in
+          }
         </button>
       </form>
     </div>
   </div>
 </main>
+
+
+
+
 
 

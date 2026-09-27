@@ -1,4 +1,4 @@
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+﻿import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
@@ -12,7 +12,7 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // If we get a 401 on an API request, standard behavior is to redirect to login
       // unless it is the login or check endpoint itself.
-      if (error.status === 401 && !req.url.includes('/api/auth/login') && !req.url.includes('/api/auth/me')) {
+      if (error.status === 401 && !req.url.includes('/api/auth/login') && !req.url.includes('/api/auth/me') && !req.url.includes('/api/auth/mfa')) {
         auth.user.set(null);
         router.navigate(['/login']);
       }
@@ -20,4 +20,5 @@ export const apiErrorInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
+
 
